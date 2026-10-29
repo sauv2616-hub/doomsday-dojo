@@ -8,7 +8,7 @@ A practice game for John Conway's **Doomsday method**: name the weekday of any d
 - **Practice solves** – enter any date and your answer; see every step (12s method and Odd+11), a diagnosis of your mistake, and the month calendar.
 - **Learn** – lessons, cheat sheet, and a year-by-doomsday table.
 
-Add to your home screen from Safari (Share → Add to Home Screen). Works offline; progress is stored on your device.
+Play at **https://doomsdaydaily.quest/**. Add to your home screen from Safari (Share → Add to Home Screen). Works offline; progress is stored on your device.
 
 ## Date library
 
