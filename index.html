@@ -627,18 +627,47 @@ def({id:'guided',title:'Guided walkthrough',sub:'Every step checked live',target
 const STEP_NAMES={anchor:'Century anchor',a:'Year ÷ 12',b:'Remainder',c:'Remainder ÷ 4',dd:'Year doomsday',leap:'Leap year',ma:'Month doomsday',wd:'Final count'};
 
 /* ---------- sound + haptics ---------- */
-let AC;
-function beep(ok){
-  if(!S.settings.sound)return;
+// Small synth: bell-like chimes through a soft echo. Correct answers climb a pentatonic scale as the streak grows.
+let AC,OUT;
+const SCALE=[0,2,4,7,9,12,14,16];  // tops out at E6 so long streaks stay pleasant
+function audio(){
+  if(!S.settings.sound)return null;
   try{
-    AC=AC||new (window.AudioContext||window.webkitAudioContext)();
-    const o=AC.createOscillator(),g=AC.createGain(),now=AC.currentTime;
-    o.type=ok?'sine':'triangle';
-    o.frequency.setValueAtTime(ok?784:220,now);if(ok)o.frequency.setValueAtTime(1175,now+.07);
-    g.gain.setValueAtTime(.0001,now);g.gain.exponentialRampToValueAtTime(ok?.09:.12,now+.01);g.gain.exponentialRampToValueAtTime(.0001,now+(ok?.2:.28));
-    o.connect(g).connect(AC.destination);o.start(now);o.stop(now+.3);
-  }catch(e){}
+    if(!AC){
+      AC=new (window.AudioContext||window.webkitAudioContext)();
+      OUT=AC.createGain();OUT.gain.value=.8;OUT.connect(AC.destination);
+      const d=AC.createDelay(),fb=AC.createGain(),lp=AC.createBiquadFilter(),wet=AC.createGain();
+      d.delayTime.value=.13;fb.gain.value=.28;lp.type='lowpass';lp.frequency.value=2600;wet.gain.value=.22;
+      OUT.connect(d);d.connect(lp);lp.connect(fb);fb.connect(d);lp.connect(wet);wet.connect(AC.destination);
+    }
+    if(AC.state==='suspended')AC.resume().catch(()=>{});
+    return AC;
+  }catch(e){return null;}
+}
+function tone(f,t,dur,vol,type,glide){
+  const o=AC.createOscillator(),g=AC.createGain();
+  o.type=type||'sine';o.frequency.setValueAtTime(f,t);if(glide)o.frequency.exponentialRampToValueAtTime(glide,t+dur);
+  g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(vol,t+.006);g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+  o.connect(g);g.connect(OUT);o.start(t);o.stop(t+dur+.05);
+}
+// bell = fundamental + soft overtones that fade faster
+function bell(f,t,vol){tone(f,t,.55,vol);tone(f*2,t,.3,vol*.35);tone(f*3.01,t,.14,vol*.18,'triangle');}
+const note=st=>523.25*Math.pow(2,SCALE[Math.min(st,SCALE.length-1)]/12);
+function beep(ok,streak){
+  const a=audio();
+  if(a){const t=a.currentTime+.005;
+    if(ok){const f=note(Math.max(0,(streak||1)-1));bell(f,t,.13);bell(f*1.5,t+.075,.11);
+      if(streak>=5)bell(f*2,t+.15,.07);}                       // sparkle on hot streaks
+    else{tone(196,t,.22,.16,'triangle',130);tone(98,t,.18,.1,'sine',80);}
+  }
   try{navigator.vibrate&&navigator.vibrate(ok?8:[25,40,25]);}catch(e){}
+}
+// end-of-game fanfare: more notes the better you did
+function fanfare(correct){
+  const a=audio();if(!a)return;const t=a.currentTime+.05;
+  const notes=correct>=5?[0,4,7,12,16,19,24]:correct>=3?[0,4,7,12]:correct>=1?[0,4,7]:[7,4,0];
+  notes.forEach((n,i)=>bell(523.25*Math.pow(2,n/12),t+i*.09,correct?.12:.08));
+  if(correct>=5)setTimeout(()=>{const a2=audio();if(a2){const t2=a2.currentTime;[0,4,7].forEach(n=>bell(1046.5*Math.pow(2,n/12),t2,.06));}},700);
 }
 
 /* ---------- views ---------- */
@@ -783,7 +812,7 @@ function answer(v){
     <div class="why">${st.why}</div>${wait?`<button class="btn ${ok?'':'ghost'} next" data-act="next">${last?'Next':'Continue'} →</button>`:''}`;
   $('#hOk').textContent=R.ok;$('#hStreak').textContent=R.streak;$('#hS').className=R.streak>=5?'hot':'';
   $('#hTime').textContent=sec(ms);
-  beep(ok);
+  beep(ok,R.streak);
   if(!wait)R.timer=setTimeout(advance,q.guided&&!last?450:750);
   else{const nb=$('.next');nb&&nb.scrollIntoView({block:'nearest',behavior:'smooth'});}
 }
@@ -837,6 +866,7 @@ function endRound(){
   else if(med>tg)coach=`Close — median ${sec(med)}, target ${sec(tg)}. A few more rounds and it’ll be automatic.`;
   else coach=`Excellent — fast and accurate. ${R.id==='full'||R.id==='daily'?'Try a wider year range in Progress.':'Move up the ladder.'}`;
   if(R.id==='daily')coach=`Total time ${sec(total)} for ${ok}/5. `+coach;
+  if(n)fanfare(acc>=.95?5:acc>=.8?3:acc>0?1:0);
   $('#pad').innerHTML='';$('#tfill').style.width='0';
   $('#dprog').textContent='';
   $('#dbody').innerHTML=`<div class="sum">
@@ -1076,14 +1106,15 @@ function gAnswer(v){
   $('#gtiles').innerHTML=gTiles(G.g,-1);
   const fb=$('#gfb');fb.className='gfb '+(ok?'ok':'bad');
   fb.innerHTML=ok?`✓ ${WD[ans]} · +${pts}<small>${sec(ms)}</small>`:`✗ ${dstr(x)} was a ${WD[ans]}<small>${sec(ms)}</small>`;
-  beep(ok);
+  let run=0;for(let k=G.g.res.length-1;k>=0&&G.g.res[k].ok;k--)run++;
+  beep(ok,run);
   setTimeout(()=>{if(!G)return;G.i++;if(G.i>=5)gFinish(G.g);else gShow();},ok?650:1500);
 }
 function gFinish(g,silent){
   while(g.res.length<5)g.res.push({v:-1,ok:false,ms:30000,pts:0});
   g.done=true;g.score=g.res.reduce((a,r)=>a+r.pts,0);g.correct=g.res.filter(r=>r.ok).length;
   g.ms=g.res.reduce((a,r)=>a+r.ms,0);g.tiles=g.res.map(tileOf).join('');save();
-  if(!silent){G=null;$('#drill').hidden=true;$('#drill').innerHTML='';$('#drill').className='';document.body.classList.remove('in-drill');tab='daily';render();window.scrollTo(0,0);}
+  if(!silent){fanfare(g.correct);G=null;$('#drill').hidden=true;$('#drill').innerHTML='';$('#drill').className='';document.body.classList.remove('in-drill');tab='daily';render();window.scrollTo(0,0);}
   sbSubmit(g.p,g);
 }
 function gQuit(){if(!G)return;const g=G.g;G=null;gFinish(g);}
