@@ -368,7 +368,7 @@ table.t th{color:var(--faint);font-size:12px;text-transform:uppercase;letter-spa
 .rcard .rev{border:0;padding:8px 0 0}
 .rcard .rev summary{font-size:14px;color:var(--accent)}
 .rcard .rev .why{margin-left:0}
-#drill.game .gfb.ok{color:var(--good)}#drill.game .gfb.bad{color:var(--bad)}
+#drill.game .gfb.ok{color:var(--good)}#drill.game .gfb.bad{color:var(--bad)}#drill.game .gfb.close{color:var(--warn)}
 #drill.game .gfb small{display:block;color:var(--muted);font-size:14px;font-weight:700;margin-top:2px}
 .gk{height:74px;border-radius:14px;font-weight:850;font-size:15px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
   background:color-mix(in srgb,var(--c) 12%,var(--card));color:var(--c);border:2px solid color-mix(in srgb,var(--c) 35%,transparent);border-bottom-width:5px;transition:transform .05s}
@@ -553,6 +553,8 @@ body.hero-on #scene{display:block}
 .sc-rows>div b{font-weight:800}
 .sc-rows .sc-res{border-bottom:0;justify-content:center;padding-top:7px;font-family:var(--brush);font-size:17px;letter-spacing:.03em}
 .rev .sc-rows{margin:8px 0 6px}
+.chart-stats{display:flex;justify-content:center;gap:18px;font-size:13px;color:var(--muted);margin-top:4px}
+.chart-stats b{color:var(--text)}
 </style>
 </head>
 <body>
@@ -698,7 +700,7 @@ function fullQ(Y,m,d){const s=solve(Y,m,d);return {key:'m'+m,type:'weekday',sub:
 const DR={};
 function def(d){DR[d.id]=d;}
 const GROUPS=[
-  {name:'Foundations',ids:['wd','times7','mod','leap']},
+  {name:'Foundations',ids:['wd','mod']},
   {name:'Anchors',ids:['month','cent']},
   {name:'Years',ids:['yoff','ydd']},
   {name:'Full dates',ids:['step','full','guided']}];
@@ -758,7 +760,7 @@ def({id:'month',title:'Month doomsdays',sub:'4/4, 6/6, 5/9, 7/11…',target:1800
   }});
 def({id:'cent',title:'Century anchors',sub:'1900s Wed, 2000s Tue…',target:1500,lesson:'cent',
   desc:'Each century has an anchor weekday. The pattern repeats every 400 years: Fri, Wed, Tue, Sun.',
-  tip:'1800 <b>Fri</b> · 1900 <b>Wed</b> (“We-in-dis-day”) · 2000 <b>Tue</b> (“Y-Tue-K”) · 2100 <b>Sun</b>. Then it repeats.',
+  tip:'1800 <b>Fri</b> · 1900 <b>Wed</b> (“We-in-dis-day”) · 2000 <b>Tue</b> (“Y-Tue-K”) · 2100 <b>Sun</b>. Each century forward is <b>−2 days</b> (only −1 into 2000 or 2400), and it all repeats every <b>400 years</b>.',
   gen(){
     const C=+pickKey('cent',['16','17','18','19','20','21','22','23'],this.target),a=centAnchor(C*100);
     const cyc=`<div class="cyc">${[18,19,20,21].map(x=>`<span class="${x%4===C%4?'on':''}">${x}00 ${WDS[centAnchor(x*100)]}</span>`).join('')}</div>`;
@@ -842,7 +844,8 @@ const note=st=>523.25*Math.pow(2,SCALE[Math.min(st,SCALE.length-1)]/12);
 function beep(ok,streak){
   const a=audio();
   if(a){const t=a.currentTime+.005;
-    if(ok){const f=note(Math.max(0,(streak||1)-1));bell(f,t,.13);bell(f*1.5,t+.075,.11);
+    if(ok==='close'){bell(392,t,.1);bell(440,t+.09,.07);}
+    else if(ok){const f=note(Math.max(0,(streak||1)-1));bell(f,t,.13);bell(f*1.5,t+.075,.11);
       if(streak>=5)bell(f*2,t+.15,.07);}                       // sparkle on hot streaks
     else{tone(196,t,.22,.16,'triangle',130);tone(98,t,.18,.1,'sine',80);}
   }
@@ -1094,7 +1097,7 @@ function vLearn(){
     <div><i>•</i><span><b>5, 6, 7, 8:</b> 56 = 7 × 8.</span></div>
     <div><i>•</i><span><b>Six sevens are forty-two</b>, and 7 × 7 = 49.</span></div>
     <div><i>•</i><span><b>Count down from 70:</b> 63 is 70 − 7, 77 is 70 + 7, 84 is 70 + 14.</span></div>
-    <div><i>•</i><span><b>Last digits</b> go 7 4 1 8 5 2 9 6 3 0 — each one is 3 less than the one before.</span></div></div>`,'times7'],
+    <div><i>•</i><span><b>Last digits</b> go 7 4 1 8 5 2 9 6 3 0 — each one is 3 less than the one before.</span></div></div>`,null],
   ['mod','Thinking in mod 7',`<p>“Mod 7” means the remainder after removing all the 7s. 19 → 14 + <b>5</b> → 5.</p>
     <p><b>Tricks</b></p><div class="calc"><div><i>•</i><span>Cast out 7s as you go — never carry big numbers.</span></div>
     <div><i>•</i><span>Negatives: add 7. −2 → 5. Going back 2 days = going forward 5.</span></div>
@@ -1108,18 +1111,31 @@ function vLearn(){
     <p>Add or subtract 7 to land near your date: if Oct 10 is a doomsday, so are Oct 3, 17, 24 and 31.</p>`,'month'],
   ['leap','Leap years',`<p>A year is a leap year if it’s divisible by 4 — <b>except</b> century years, which must be divisible by 400.</p>
     <div class="ex">2024 ✓ · 2023 ✗ · 2000 ✓ · 1900 ✗ · 2100 ✗</div>
-    <p>Only the last two digits matter for the ÷4 check (1984 → 84 → ✓). Leap years only change the January and February doomsdays.</p>`,'leap'],
+    <p>Only the last two digits matter for the ÷4 check (1984 → 84 → ✓). Leap years only change the January and February doomsdays.</p>`,null],
   ['cent','Century anchors',`<p>Each century starts from an anchor weekday, repeating every 400 years:</p>
     <table class="t"><tr><th>Century</th><th>Anchor</th><th>Hook</th></tr>
     <tr><td>1800s</td><td>${chipN(5)}</td><td>—</td></tr><tr><td>1900s</td><td>${chipN(3)}</td><td>“We-in-dis-day”</td></tr>
-    <tr><td>2000s</td><td>${chipN(2)}</td><td>“Y-Tue-K”</td></tr><tr><td>2100s</td><td>${chipN(0)}</td><td>—</td></tr></table>
-    <p>For any other century, use century mod 4 (1600s ≡ 2000s, 1700s ≡ 2100s), or the formula <b>(5 × (C mod 4) + 2) mod 7</b>.</p>`,'cent'],
+    <tr><td>2000s</td><td>${chipN(2)}</td><td>“Y-Tue-K”</td></tr><tr><td>2100s</td><td>${chipN(0)}</td><td>—</td></tr>
+    <tr><td>2200s</td><td>${chipN(5)}</td><td>same as 1800s</td></tr><tr><td>2300s</td><td>${chipN(3)}</td><td>same as 1900s</td></tr><tr><td>2400s</td><td>${chipN(2)}</td><td>same as 2000s</td></tr></table>
+    <p><b>Every 400 years it restarts.</b> 1600s = 2000s = 2400s, 1700s = 2100s, and so on.</p>
+    <p><b>Jumping a century:</b> one century forward moves the anchor <b>back 2 days</b> (same as +5): 1800 Fri → 1900 Wed, 2000 Tue → 2100 Sun → 2200 Fri. One century back is <b>+2 days</b>.</p>
+    <div class="ex"><b>The one exception:</b> stepping <i>into</i> a century divisible by 400 is only −1 (1900 Wed → 2000 Tue, 2300 Wed → 2400 Tue), and stepping back out of one is +1. That’s because 2000 and 2400 keep their leap day. The four steps −2, −2, −2, −1 add up to −7, a whole week, which is exactly why the cycle restarts every 400 years.</div>
+    <p>Formula version: <b>(5 × (C mod 4) + 2) mod 7</b>, where C is the first two digits.</p>`,'cent'],
   ['year','Year doomsday: the 12s method',`<p>Take the last two digits <b>y</b>:</p>
     <div class="calc"><div><i>a</i><span>How many 12s fit: ⌊y ÷ 12⌋</span></div><div><i>b</i><span>The remainder</span></div>
     <div><i>c</i><span>How many 4s fit in the remainder: ⌊b ÷ 4⌋</span></div>
     <div><i>=</i><span>anchor + a + b + c, mod 7 → doomsday</span></div></div>
     <div class="ex"><b>1987:</b> 1900s anchor Wed (3). 87 = 7×12 + 3, 3÷4 → 0. 3 + 7 + 3 + 0 = 13 → 6 → <b>Saturday</b>.</div>
     <p><b>Shortcut:</b> 12 years always shift the doomsday by 1. So ’00, ’12, ’24, ’36, ’48 are +0, +1, +2, +3, +4. Count up from the nearest one.</p>`,'yoff'],
+  ['cycle','Only 14 calendars, every 28 years',`<p>There are only <b>14 different calendars</b>: a year starts on one of 7 weekdays, and it’s either a leap year or not. Every year ever uses one of them.</p>
+    <p>Within a century the pattern repeats every <b>28 years</b>, so the doomsday (and the whole calendar) comes back:</p>
+    <div class="ex"><b>1998, 2026 and 2054</b> all have a ${chip(6)} doomsday — same calendar, 28 years apart.</div>
+    <div class="calc"><div><i>+28</i><span>years → same doomsday (+0)</span></div>
+    <div><i>+12</i><span>years → doomsday +1 day</span></div>
+    <div><i>+4</i><span>years → doomsday +5 days (same as −2)</span></div>
+    <div><i>+1</i><span>year → +1 day, or +2 if you pass a leap day</span></div></div>
+    <p><b>Careful:</b> these jumps break when you cross a century year that skips its leap day, like 1900 or 2100. Within 1901–2099 they always work.</p>
+    <p>The full Gregorian calendar repeats exactly every <b>400 years</b>. So June 7, 1626 fell on the same weekday as June 7, 2026.</p>`,null],
   ['odd','Alternative: Odd + 11',`<p>Some people find this faster — no division by 12:</p>
     <div class="calc"><div><i>1</i><span>If y is odd, add 11.</span></div><div><i>2</i><span>Halve it.</span></div>
     <div><i>3</i><span>If that’s odd, add 11.</span></div><div><i>4</i><span>Take mod 7, then subtract from 7.</span></div>
@@ -1142,7 +1158,8 @@ function vLearn(){
   <section class="card cheat"><div class="qsub" style="margin-bottom:10px">Cheat sheet</div><div class="cg">
     <span>Days</span><span>Sun 0 · Mon 1 · Tue 2 · Wed 3 · Thu 4 · Fri 5 · Sat 6</span>
     <span>7s</span><span>7 14 21 28 35 42 49 56 63 70 77 84</span>
-    <span>Centuries</span><span>1800 Fri · 1900 Wed · 2000 Tue · 2100 Sun</span>
+    <span>Centuries</span><span>1800 Fri · 1900 Wed · 2000 Tue · 2100 Sun · repeats every 400 yrs · next century −2 days (−1 into 2000, 2400)</span>
+    <span>Cycle</span><span>same calendar every 28 yrs · +12 yrs → +1 day · +4 yrs → −2 days</span>
     <span>Months</span><span>1/3* · 2/28* · 3/14 · 4/4 · 5/9 · 6/6 · 7/11 · 8/8 · 9/5 · 10/10 · 11/7 · 12/12</span>
     <span>Year</span><span>anchor + ⌊y/12⌋ + y mod 12 + ⌊(y mod 12)/4⌋</span>
     <span>Leap</span><span>*1/4 and 2/29 in leap years</span></div></section>
@@ -1232,7 +1249,6 @@ const SB={url:'https://jjhzwpbkrilqnlczyobp.supabase.co',key:'sb_publishable_V3m
 const online=()=>!!(SB.url&&SB.key);
 const EPOCH=Date.UTC(2026,9,29);
 const APP_URL='https://doomsdaydaily.quest/';
-const MODEL={mean:560,sd:190};
 const NQ=3;
 const CATS={h:['🏛','History'],s:['🔬','Science'],p:['🚀','Space'],k:['🌌','Sky'],c:['🎭','Culture'],b:['🎂','Born'],f:['🎬','Fiction']};
 function puzzleNo(t=new Date()){return Math.floor((Date.UTC(t.getFullYear(),t.getMonth(),t.getDate())-EPOCH)/864e5)+1;}
@@ -1244,7 +1260,8 @@ function dailyList(p=puzzleNo()){
 }
 // 200 for the right day plus up to 134 for speed (full bonus under 3s, none at 30s); three perfect answers = 1000
 const qPts=(ok,ms)=>ok?200+Math.round(134*Math.max(0,Math.min(1,(30000-ms)/27000))):0;
-const tileOf=r=>!r?'':!r.ok?'R':r.ms<=10000?'G':'Y';
+const tileOf=r=>!r?'':r.ok?'G':r.close?'Y':'R';
+const CLOSE_PTS=50;
 const esc=x=>String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const dstr=x=>`${MONS[x.m-1]} ${x.d}, ${x.Y}`;
 function isPast(x){const t=new Date();return x.Y*10000+x.m*100+x.d<t.getFullYear()*10000+(t.getMonth()+1)*100+t.getDate();}
@@ -1265,14 +1282,18 @@ function factCard(x){
     ${dateExtras(x).map(e=>`<small>${e}</small>`).join('')}</div>`;
 }
 // The three-line shortcut shown after a miss: the year's doomsday, the nearest doomsday date, and the count from it
+const CLASSIC=[[3],[28],[14],[4],[9],[6],[11],[8],[5],[10],[7],[12,26]];   // Jan/Feb shift by one in leap years
+const CLASSIC_NAME={'12/26':'12/26 (Boxing Day)','3/14':'3/14 (Pi Day)'};
 function shortcutRows(s){
-  const near=s.m===3&&s.nd===0?`${s.leap?'2/29':'2/28'} (last day of Feb)`:`${s.m}/${s.nd}`,n=Math.abs(s.diff);
-  const step=s.diff===0?'0 days — it’s a doomsday':`${s.diff>0?'+':'−'}${n} day${n===1?'':'s'}`;
+  const opts=CLASSIC[s.m-1].map(d=>s.leap&&s.m<=2?d+1:d),c=opts.reduce((b,d)=>Math.abs(s.d-d)<Math.abs(s.d-b)?d:b,opts[0]);
+  const diff=s.d-c,n=Math.abs(diff),sg=diff>0?'+':'−',k=n%7,key=`${s.m}/${c}`;
+  const step=diff===0?'0 days — it’s a doomsday':`${sg}${n} day${n===1?'':'s'}`;
   return `<div class="sc-rows">
     <div><span>Doomsday ${s.Y}</span><b>${WD[s.dd]}</b></div>
-    <div><span>Closest doomsday</span><b>${near}</b></div>
+    <div><span>Closest doomsday</span><b>${CLASSIC_NAME[key]||key}</b></div>
     <div><span>Then count</span><b>${step}</b></div>
-    <div class="sc-res">${WD[s.dd]} ${s.diff===0?'':`${s.diff>0?'+':'−'} ${n}`} → <b>${WD[s.wd]}</b></div></div>`;
+    ${n>=7?`<div><span>Drop the whole weeks</span><b>${k?`${sg}${k}${k>3?` (same as ${diff>0?'−':'+'}${7-k})`:''}`:'+0'}</b></div>`:''}
+    <div class="sc-res">${WD[s.dd]}${k?` ${sg} ${k}`:''} → <b>${WD[s.wd]}</b></div></div>`;
 }
 function shortcutTab(x){const s=solve(x.Y,x.m,x.d);
   return `<details class="sc"><summary>Show the shortcut</summary>${shortcutRows(s)}</details>`;}
@@ -1322,15 +1343,16 @@ function gLoop(){
 function gAnswer(v){
   if(!G||G.locked)return;
   G.locked=true;
-  const x=G.g.list[G.i],ans=solve(x.Y,x.m,x.d).wd,ms=performance.now()-G.t0,ok=v===ans,pts=qPts(ok,ms);
-  G.g.res.push({v,ok,ms:Math.round(ms),pts});save();
+  const x=G.g.list[G.i],ans=solve(x.Y,x.m,x.d).wd,ms=performance.now()-G.t0,ok=v===ans,close=!ok&&(mod7(v-ans)===1||mod7(ans-v)===1);
+  const pts=ok?qPts(true,ms):close?CLOSE_PTS:0;
+  G.g.res.push({v,ok,close,ms:Math.round(ms),pts});save();
   document.querySelectorAll('[data-gv]').forEach(b=>{const n=+b.dataset.gv;if(n===ans)b.className+=' right';else if(n===v)b.className+=' wrong';});
   $('#gtiles').innerHTML=gTiles(G.g,-1);
   let run=0;for(let k=G.g.res.length-1;k>=0&&G.g.res[k].ok;k--)run++;
-  beep(ok,run);
+  beep(ok?true:close?'close':false,run);
   // the trivia is the reward: show it and wait for a tap (the clock is already stopped)
-  const fb=$('#gfb');fb.className='gfb '+(ok?'ok':'bad');
-  fb.innerHTML=`<div class="vline">${ok?`✓ ${WD[ans]} · +${pts}`:`✗ It ${isPast(x)?'was':'will be'} a ${WD[ans]}`}<small>${sec(ms)}</small></div>
+  const fb=$('#gfb');fb.className='gfb '+(ok?'ok':close?'close':'bad');
+  fb.innerHTML=`<div class="vline">${ok?`✓ ${WD[ans]} · +${pts}`:close?`≈ So close! It ${isPast(x)?'was':'will be'} a ${WD[ans]} · +${pts}`:`✗ It ${isPast(x)?'was':'will be'} a ${WD[ans]}`}<small>${sec(ms)}</small></div>
     ${ok?'':shortcutTab(x)}
     ${factCard(x)}
     <button class="btn next" data-act="g-next">${G.i>=NQ-1?'See results':'Next date'} →</button>`;
@@ -1391,13 +1413,12 @@ function vDaily(){
   <div class="tiles5">${g.tiles.split('').map(t=>`<div class="tile5 ${t}"></div>`).join('')}</div>
   <div class="big-score"><b>${g.score}</b><small>points out of 1000</small></div>
   <div class="meta3"><div><b>${g.correct}/${NQ}</b><small>correct</small></div><div><b>${sec(g.ms)}</b><small>total time</small></div><div><b>${LB.rows?sc.length+1:'–'}</b><small>players</small></div></div>
-  <section class="card"><div class="rank">${rankTxt}</div>${curveSvg(g.score,sc)}
-    <p class="why" style="text-align:center;margin:4px 0 0">${sc.length>=5?'Curve fitted to today’s scores':'Curve shows typical scores'}${sc.length?' · dots are other players':''}</p>
+  <section class="card"><div class="rank">${rankTxt}</div>${online()&&LB.rows?scoreChart(g.score,sc):''}
     ${online()?'<button class="link" data-act="g-refresh">Refresh</button>':''}</section>
   <button class="btn" data-act="g-share">Share result</button>
   <div class="gh">Today’s dates</div>${g.list.map((x,i)=>{const s=solve(x.Y,x.m,x.d),r=g.res[i];
     return `<section class="card rcard"><div class="rtop"><span class="mini"><i class="${tileOf(r)}"></i></span><b>${dstr(x)}</b> · ${WD[s.wd]}
-      <span class="pts">${r.v<0?'skipped':`${sec(r.ms)} · +${r.pts}`}</span></div>${factCard(x)}
+      <span class="pts">${r.v<0?'skipped':`${sec(r.ms)} · +${r.pts}${r.close?' · off by 1':''}`}</span></div>${factCard(x)}
       <details class="rev"><summary>${r.ok?'How to work it out':r.v<0?'Not answered — how to work it out':`You said ${WD[r.v]} — how to work it out`}</summary>${shortcutRows(s)}<div class="why">${whyFull(s)}</div></details></section>`;}).join('')}
   <div class="cd">Next Daily Three in<b id="cd">${countdown()}</b></div>
   <p class="foot">Want more? Train → Practice solves or Full date.</p>`;
@@ -1411,26 +1432,23 @@ function tick(){
   // roll over to the new puzzle at midnight
   if(tab==='daily'&&!G&&LB.p!==null&&LB.p!==puzzleNo()){LB={p:puzzleNo(),rows:null,err:null};render();sbLoad(puzzleNo());}
 }
-function curveSvg(me,sc){
-  const W=320,H=130,L=12,Rt=308,B=104,T=12,X=v=>L+(Math.max(0,Math.min(1000,v))/1000)*(Rt-L);
-  let mean=MODEL.mean,sd=MODEL.sd;
-  if(sc.length>=5){mean=sc.reduce((a,b)=>a+b,0)/sc.length;sd=Math.max(60,Math.sqrt(sc.reduce((a,b)=>a+(b-mean)**2,0)/sc.length));}
-  const pdf=v=>Math.exp(-((v-mean)**2)/(2*sd*sd)),pts=[];
-  for(let v=0;v<=1000;v+=10)pts.push([X(v),B-pdf(v)*(B-T)]);
-  const line=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ');
-  const area=line+` L${Rt} ${B} L${L} ${B} Z`,mx=X(me);
-  return `<svg class="curve" viewBox="0 0 ${W} ${H}" role="img" aria-label="Score distribution with your score marked">
-    <defs><clipPath id="beat"><rect x="0" y="0" width="${mx}" height="${H}"/></clipPath></defs>
-    <path d="${area}" fill="var(--card2)"/>
-    <path d="${area}" fill="color-mix(in srgb,var(--accent) 30%,transparent)" clip-path="url(#beat)"/>
-    <path d="${line}" fill="none" stroke="var(--muted)" stroke-width="1.5"/>
-    <line x1="${L}" y1="${B}" x2="${Rt}" y2="${B}" stroke="var(--line)" stroke-width="1.5"/>
-    ${sc.map((v,i)=>`<circle cx="${X(v).toFixed(1)}" cy="${B+8+(i%3)*4}" r="2.6" fill="var(--faint)" opacity=".8"/>`).join('')}
-    <line x1="${mx}" y1="${T-4}" x2="${mx}" y2="${B}" stroke="var(--accent)" stroke-width="2.5"/>
-    <circle cx="${mx}" cy="${B}" r="5" fill="var(--accent)"/>
-    <text x="${Math.min(Rt-30,Math.max(L+30,mx))}" y="${T-1}" text-anchor="middle" font-size="12" font-weight="800" fill="var(--accent)">You · ${me}</text>
-    <text x="${L}" y="${H-1}" font-size="10" fill="var(--faint)">0</text><text x="${Rt}" y="${H-1}" font-size="10" fill="var(--faint)" text-anchor="end">1000</text>
-  </svg>`;
+// Today's real scores in bands of 100 points, with your band highlighted
+function scoreChart(me,others){
+  const all=[...others,me],bins=Array(10).fill(0),bin=v=>Math.min(9,Math.floor(v/100));
+  all.forEach(v=>bins[bin(v)]++);
+  const max=Math.max(...bins),mine=bin(me),sorted=[...all].sort((a,b)=>a-b),med=sorted[sorted.length>>1];
+  const W=320,H=150,L=8,B=118,T=24,bw=(W-2*L)/10;
+  const hOf=(c,i)=>c?Math.max(i===mine?20:6,(B-T)*c/max):2;
+  const bars=bins.map((c,i)=>{const h=hOf(c,i),x=L+i*bw+2;
+    return `<rect x="${x.toFixed(1)}" y="${(B-h).toFixed(1)}" width="${(bw-4).toFixed(1)}" height="${h.toFixed(1)}" fill="${i===mine?'var(--paint)':'var(--muted)'}" opacity="${i===mine?1:c?.55:.25}"/>
+      ${c?`<text x="${(x+bw/2-2).toFixed(1)}" y="${(i===mine?B-h+14:B-h-5).toFixed(1)}" text-anchor="middle" font-size="11" font-weight="800" fill="${i===mine?'var(--ink)':'var(--muted)'}">${c}</text>`:''}`;}).join('');
+  const mx=L+mine*bw+bw/2,youY=B-hOf(bins[mine],mine)-7;
+  return `<svg class="curve" viewBox="0 0 ${W} ${H}" role="img" aria-label="How many players scored in each 100-point band today; your band is highlighted">
+    ${bars}<line x1="${L}" y1="${B}" x2="${W-L}" y2="${B}" stroke="var(--line)" stroke-width="1.5"/>
+    <text x="${mx.toFixed(1)}" y="${youY.toFixed(1)}" text-anchor="middle" font-size="12" font-weight="800" fill="var(--paint)">▼ You</text>
+    ${[0,250,500,750,1000].map(v=>`<text x="${(L+v/1000*(W-2*L)).toFixed(1)}" y="${B+16}" text-anchor="${v===0?'start':v===1000?'end':'middle'}" font-size="10" fill="var(--faint)">${v}</text>`).join('')}
+  </svg>
+  <div class="chart-stats"><span><b>${all.length}</b> player${all.length===1?'':'s'}</span><span>median <b>${med}</b></span><span>best <b>${sorted[sorted.length-1]}</b></span></div>`;
 }
 async function gShare(){
   const g=today();if(!g)return;
@@ -1438,7 +1456,7 @@ async function gShare(){
   const top=others.length?topPct(g.score,others):null;
   const em={G:'🟩',Y:'🟨',R:'🟥'};
   const s1=ms=>(ms/1000).toFixed(1)+'s';
-  const rows=g.res.map((r,i)=>`${em[g.tiles[i]]||'⬜'} ${r.v<0?'skipped':`+${r.pts} · ${s1(r.ms)}`}`).join('\n');
+  const rows=g.res.map((r,i)=>`${em[g.tiles[i]]||'⬜'} ${r.v<0?'skipped':`+${r.pts} · ${s1(r.ms)}${r.close?' · off by 1':''}`}`).join('\n');
   const text=`Doomsday Daily #${g.p} · ${g.score}/1000\n\n${rows}\n\n⏱ ${s1(g.ms)}${top?` · Top ${top}% today`:''}\ndoomsdaydaily.quest`;
   if(await copyText(text)){toast('Copied results to clipboard');return;}
   try{if(navigator.share){await navigator.share({text});return;}}catch(e){if(e&&e.name==='AbortError')return;}
@@ -1712,7 +1730,7 @@ function openHow(){
     <div class="rules" style="margin-top:14px">
       <div><b class="n">3</b><span>Three dates a day, each one special — the same for everyone.</span></div>
       <div><b class="n">7</b><span>Tap the weekday each date fell on. Then find out what happened that day.</span></div>
-      <div><b class="n">⏱</b><span>200 points for every right answer plus up to 134 for speed. Three perfect answers make 1000.</span></div>
+      <div><b class="n">⏱</b><span>Right day: 200 points plus up to 134 for speed. Off by one day: 50 points. Three fast, perfect answers make 1000.</span></div>
       <div><b class="n">%</b><span>See where you rank among today’s players, then share your tiles.</span></div></div>
     <p>New to working out weekdays? The <b>Learn</b> tab teaches the Doomsday method, and <b>Train</b> drills each step.</p>
     <button class="btn" data-act="how-close">Got it</button></div></div>`;
