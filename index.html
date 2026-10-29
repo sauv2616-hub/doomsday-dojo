@@ -1036,7 +1036,6 @@ function gBoot(){
 }
 let G=null,gTimer=0;
 function gStart(){
-  const inp=$('#gname');if(inp){S.name=cleanName(inp.value);}
   const p=puzzleNo();if(S.games[p]&&S.games[p].done)return;
   const g={p,list:dailyList(),res:[],done:false,submitted:false,started:Date.now()};
   S.games[p]=g;save();
@@ -1095,7 +1094,7 @@ async function sbSubmit(p,g){
   if(!online()||g.submitted)return;
   try{
     const r=await fetch(SB.url+'/rest/v1/daily_scores',{method:'POST',headers:{...sbHeaders(),Prefer:'return=minimal'},
-      body:JSON.stringify({puzzle:p,client_id:S.cid,player:S.name||'Anonymous',score:g.score,correct:g.correct,ms:Math.round(g.ms),tiles:g.tiles})});
+      body:JSON.stringify({puzzle:p,client_id:S.cid,player:'anon',score:g.score,correct:g.correct,ms:Math.round(g.ms),tiles:g.tiles})});
     if(r.ok||r.status===409){g.submitted=true;save();}
   }catch(e){}
   sbLoad(p);
@@ -1104,7 +1103,7 @@ let LB={p:null,rows:null,err:null};
 async function sbLoad(p){
   if(!online()){LB={p,rows:null,err:'offline'};return;}
   try{
-    const r=await fetch(`${SB.url}/rest/v1/daily_scores?puzzle=eq.${p}&select=client_id,player,score,correct,ms,tiles&order=score.desc,ms.asc&limit=5000`,{headers:sbHeaders()});
+    const r=await fetch(`${SB.url}/rest/v1/daily_scores?puzzle=eq.${p}&select=client_id,score&order=score.desc,ms.asc&limit=5000`,{headers:sbHeaders()});
     LB={p,rows:r.ok?await r.json():null,err:r.ok?null:'error'};
   }catch(e){LB={p,rows:null,err:'network'};}
   if(tab==='daily'&&!G)render();
@@ -1121,38 +1120,30 @@ function vDaily(){
       <div><b class="n">5</b><span>Five dates, the same for everyone today.</span></div>
       <div><b class="n">7</b><span>Tap the weekday each one fell on.</span></div>
       <div><b class="n">⏱</b><span>100 points per correct day, plus up to 100 for speed.</span></div></div>
-      <div class="namein"><label for="gname">Your name</label><input id="gname" maxlength="16" placeholder="for the leaderboard" value="${esc(S.name||'')}" autocomplete="nickname"></div>
       <button class="btn" data-act="g-play">Play today’s five</button></section>
-    <p class="cd">${online()?(n?`${n} player${n===1?'':'s'} so far today`:'Be the first to play today'):'Leaderboard not connected yet'}</p>
+    <p class="cd">${online()?(n?`${n} player${n===1?'':'s'} so far today`:'Be the first to play today'):'Rankings not connected yet'}</p>
     <p class="foot">New in the Doomsday method? Learn it in the Learn tab, then drill it in Train.</p>`;
   }
-  const others=(LB.rows||[]).filter(r=>r.client_id!==S.cid);
-  const sc=others.map(r=>r.score);
-  const beat=sc.length?(sc.filter(x=>x<g.score).length+.5*sc.filter(x=>x===g.score).length)/sc.length:null;
-  const rankTxt=!online()?'Leaderboard not connected yet'
+  const sc=(LB.rows||[]).filter(r=>r.client_id!==S.cid).map(r=>r.score),top=topPct(g.score,sc);
+  const rankTxt=!online()?'Rankings not connected yet'
     :LB.rows===null?'Loading today’s players…'
-    :!sc.length?'You’re the first player today!':`You beat <em>${Math.round(beat*100)}%</em> of ${sc.length} player${sc.length===1?'':'s'}`;
-  const rows=(LB.rows||[]).slice();
-  if(online()&&LB.rows&&!rows.some(r=>r.client_id===S.cid))rows.push({client_id:S.cid,player:S.name||'You',score:g.score,ms:g.ms,tiles:g.tiles});
-  rows.sort((a,b)=>b.score-a.score||a.ms-b.ms);
-  const myRank=rows.findIndex(r=>r.client_id===S.cid);
-  const shown=rows.slice(0,10);if(myRank>=10)shown.push(rows[myRank]);
+    :!sc.length?'You’re the first player today!':`Top <em>${top}%</em> of today’s players`;
   return `${head}
   <div class="tiles5">${g.tiles.split('').map(t=>`<div class="tile5 ${t}"></div>`).join('')}</div>
   <div class="big-score"><b>${g.score}</b><small>points out of 1000</small></div>
-  <div class="meta3"><div><b>${g.correct}/5</b><small>correct</small></div><div><b>${sec(g.ms)}</b><small>total time</small></div><div><b>${myRank>=0&&LB.rows?'#'+(myRank+1):'–'}</b><small>rank</small></div></div>
+  <div class="meta3"><div><b>${g.correct}/5</b><small>correct</small></div><div><b>${sec(g.ms)}</b><small>total time</small></div><div><b>${LB.rows?sc.length+1:'–'}</b><small>players</small></div></div>
   <section class="card"><div class="rank">${rankTxt}</div>${curveSvg(g.score,sc)}
-    <p class="why" style="text-align:center;margin:4px 0 0">${sc.length>=5?'Curve fitted to today’s scores':'Curve shows typical scores'}${sc.length?' · dots are other players':''}</p></section>
+    <p class="why" style="text-align:center;margin:4px 0 0">${sc.length>=5?'Curve fitted to today’s scores':'Curve shows typical scores'}${sc.length?' · dots are other players':''}</p>
+    ${online()?'<button class="link" data-act="g-refresh">Refresh</button>':''}</section>
   <button class="btn" data-act="g-share">Share result</button>
-  ${online()&&LB.rows?`<div class="gh">Today’s leaderboard</div><section class="card"><table class="lb">${shown.map(r=>{const i=rows.indexOf(r);
-    return `<tr class="${r.client_id===S.cid?'me':''}"><td class="r">${i+1}</td><td>${esc(r.player)} <span class="mini">${String(r.tiles||'').split('').map(t=>`<i class="${t}"></i>`).join('')}</span></td><td class="t">${sec(r.ms)}</td><td class="s">${r.score}</td></tr>`;}).join('')}</table>
-    <button class="link" data-act="g-refresh">Refresh</button></section>`:''}
   <div class="gh">Review</div><section class="card">${g.list.map((x,i)=>{const s=solve(x.Y,x.m,x.d),r=g.res[i];
     return `<details class="rev"><summary><span class="mini"><i class="${tileOf(r)}"></i></span>${dstr(x)} · ${WD[s.wd]}<span class="pts">${r.v<0?'skipped':`${sec(r.ms)} · +${r.pts}`}</span></summary>
       <div class="why">${r.ok?'':r.v<0?'Not answered. ':`You said ${WD[r.v]}. `}${whyFull(s)}</div></details>`;}).join('')}</section>
   <div class="cd">Next Daily Five in<b id="cd">${countdown()}</b></div>
   <p class="foot">Want more? Train → Practice solves or Full date.</p>`;
 }
+// Where you sit among everyone today (you included): best of 4 → Top 25%
+function topPct(me,others){const ahead=others.filter(x=>x>me).length+.5*others.filter(x=>x===me).length;return Math.max(1,Math.ceil(100*(ahead+1)/(others.length+1)));}
 function countdown(){const n=new Date(),m=new Date(n.getFullYear(),n.getMonth(),n.getDate()+1),s=Math.max(0,Math.floor((m-n)/1000));
   return `${Math.floor(s/3600)}:${pad(Math.floor(s/60)%60)}:${pad(s%60)}`;}
 function tick(){
@@ -1184,9 +1175,9 @@ function curveSvg(me,sc){
 async function gShare(){
   const g=today();if(!g)return;
   const others=(LB.rows||[]).filter(r=>r.client_id!==S.cid).map(r=>r.score);
-  const top=others.length?Math.max(1,Math.round(100-100*(others.filter(x=>x<g.score).length+.5*others.filter(x=>x===g.score).length)/others.length)):null;
+  const top=others.length?topPct(g.score,others):null;
   const em={G:'🟩',Y:'🟨',R:'🟥'};
-  const text=`Doomsday Daily Five #${g.p} — ${g.score}/1000\n${g.tiles.split('').map(t=>em[t]).join('')} ⏱ ${sec(g.ms)}${top?`\nTop ${top}% today`:''}\n${APP_URL}`;
+  const text=`Doomsday Daily Five #${g.p} — ${g.score}/1000\n${g.tiles.split('').map(t=>em[t]).join('')} ⏱ ${sec(g.ms)}${top?`\nTop ${top}% of today’s players`:''}\n${APP_URL}`;
   try{if(navigator.share){await navigator.share({text});return;}}catch(e){if(e&&e.name==='AbortError')return;}
   try{await navigator.clipboard.writeText(text);toast('Result copied — paste it to your friends');}catch(e){toast('Couldn’t copy');}
 }
@@ -1228,7 +1219,6 @@ document.addEventListener('click',e=>{
 document.addEventListener('change',e=>{
   if(e.target.id==='ytc'){ytC=+e.target.value;$('#ytab').innerHTML=yearTable(ytC);}
   else if(e.target.id==='srange'){S.settings.range=e.target.value;save();}
-  else if(e.target.id==='gname'){S.name=cleanName(e.target.value);e.target.value=S.name;save();}
   else if(['sm','sd','sy'].includes(e.target.id)){readSolve();if(SV.revealed)renderSolveResult();}
 });
 document.addEventListener('input',e=>{if(['sd','sy'].includes(e.target.id)){SV.revealed=false;$('#sres').innerHTML='';}});
