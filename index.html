@@ -5,13 +5,12 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Doomsday Dojo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,900&family=Permanent+Marker&display=swap" rel="stylesheet">
 <meta name="description" content="Train the Doomsday method: name the weekday of any date in your head.">
-<meta name="theme-color" content="#f7f3ea" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0f1115" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#0d151f">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="Doomsday">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
@@ -384,6 +383,146 @@ table.t th{color:var(--faint);font-size:12px;text-transform:uppercase;letter-spa
 .prac small{color:var(--muted);font-size:13.5px}
 .back{display:inline-flex;align-items:center;gap:6px;color:var(--accent);font-weight:800;font-size:15px;padding:6px 0;margin-top:4px}
 .foot{color:var(--faint);font-size:12.5px;text-align:center;margin:20px 0 4px;line-height:1.5}
+/* ================= painterly skin =================
+   Oil-paint look: painted backdrop, canvas grain, ragged brush-cut panels and paint-swipe buttons.
+   Masks and textures are generated once at startup (paintSkin) and handed over as CSS variables. */
+:root,:root[data-theme="dark"]{
+  --bg:#121c28;--bg2:#0d151f;--card:#1a2a3b;--card2:#233649;--line:#33485e;
+  --text:#f3ead8;--muted:#bcb4a3;--faint:#828a92;
+  --accent:#f2b632;--accent2:#e8862a;--paint:#f2b632;--ink:#1d1409;--good:#5fae4f;--bad:#d4483a;--warn:#e9a52f;
+  --w0:#e0533d;--w1:#ef8f3a;--w2:#f2c14b;--w3:#6cb04f;--w4:#3fb0a6;--w5:#5b8fd6;--w6:#b867c6;
+  --brush:"Permanent Marker","Marker Felt","Comic Sans MS",cursive;
+  --shadow:none;color-scheme:dark;
+}
+:root[data-theme="paper"]{
+  --bg:#e8dbbf;--bg2:#dccba8;--card:#f3e9d3;--card2:#eadcbf;--line:#d2bf9b;
+  --text:#2a2118;--muted:#6b5a45;--faint:#9a8a72;
+  --accent:#b5651d;--accent2:#c0392b;--paint:#f0b23a;--ink:#1d1409;--good:#3f8a2e;--bad:#c0392b;--warn:#c98a10;
+  --w0:#c0392b;--w1:#cc6a1c;--w2:#a77b00;--w3:#3f8a2e;--w4:#13807a;--w5:#2f5fae;--w6:#8c3fa0;
+  color-scheme:light;
+}
+/* cream "paper" surfaces read as ink on parchment in either theme */
+.fact,#drill .qcard,#drill.game .gq,.card:has(.rules),.paper{
+  --text:#2a2118;--muted:#6b5a45;--faint:#9a8a72;--card:#e9dcc0;--card2:#e0d0b0;--line:#cdbb98;--accent:#b5651d;
+  --w0:#c0392b;--w1:#cc6a1c;--w2:#a77b00;--w3:#3f8a2e;--w4:#13807a;--w5:#2f5fae;--w6:#8c3fa0;
+  color:var(--text);background:var(--tex-paper,#efe3c6) center/220px repeat,#efe3c6;
+}
+html{background:var(--bg)}
+html body{background:transparent;letter-spacing:.012em}
+body::before{content:"";position:fixed;inset:0;z-index:-1;background:var(--tex-backdrop,none) center/cover no-repeat,var(--bg)}
+body::after{content:"";position:fixed;inset:0;z-index:100;pointer-events:none;background:var(--tex-grain,none) 0 0/160px repeat;mix-blend-mode:overlay;opacity:.09}
+
+/* ragged, hand-cut panels */
+.card,.drow,.hud div,.tile,.meta3 div,.lesson,.seg,.kdisp,.sheet,.tile5,.k,.gk,.fact,#drill .qcard,#drill.game .gq,.cyc span,.mgrid div,.ex,.tip,.coach,.pill{
+  border:0!important;box-shadow:none!important;
+  -webkit-mask:var(--m-a) center/100% 100% no-repeat;mask:var(--m-a) center/100% 100% no-repeat;
+}
+.card:nth-of-type(2n),.drow:nth-child(2n),.k:nth-child(2n),.gk:nth-child(2n),.tile5:nth-child(2n),.hud div:nth-child(2n),.meta3 div:nth-child(2n){-webkit-mask-image:var(--m-b);mask-image:var(--m-b)}
+.card:nth-of-type(3n),.drow:nth-child(3n),.k:nth-child(3n),.gk:nth-child(3n),.tile5:nth-child(3n),.lesson:nth-child(2n){-webkit-mask-image:var(--m-c);mask-image:var(--m-c)}
+.card,.drow,.hud div,.tile,.meta3 div,.lesson,.seg,.kdisp,.sheet,.k,.tile5,.coach,.tip,.ex,.mgrid div{
+  background:var(--tex-panel,none) center/240px repeat,var(--card)}
+.sheet{background-color:var(--bg2)}
+.coach{border-left:0!important;background:var(--tex-panel,none) center/240px repeat,color-mix(in srgb,var(--paint) 18%,var(--card))}
+.card,.drow{border-radius:0}
+
+/* headings in brush lettering; body stays clean */
+h1,h2,.dhead h1{font-family:var(--brush);font-weight:400;letter-spacing:.02em}
+h1{font-size:34px}
+.dhead h1{font-size:50px;line-height:1.05;margin:6px 0 2px;transform:rotate(-2deg)}
+h3{font-family:var(--brush);font-weight:400;letter-spacing:.03em;font-size:19px}
+.top h1 span,h1 span{color:var(--paint)}
+.gh{letter-spacing:.18em;color:var(--muted)}
+.dhead .kick{display:inline-block;color:var(--ink);background:var(--paint);padding:5px 16px 4px;letter-spacing:.14em;
+  -webkit-mask:var(--m-swipe) center/100% 100% no-repeat;mask:var(--m-swipe) center/100% 100% no-repeat}
+
+/* paint-swipe buttons */
+.btn{font-family:var(--brush);font-weight:400;font-size:20px;letter-spacing:.06em;text-transform:uppercase;border:0!important;border-radius:0;
+  background:var(--tex-paper,none) center/220px repeat,var(--paint);background-blend-mode:multiply;color:var(--ink);padding:16px 20px 14px;
+  -webkit-mask:var(--m-swipe) center/100% 100% no-repeat;mask:var(--m-swipe) center/100% 100% no-repeat}
+.btn.ghost{background:var(--tex-panel,none) center/240px repeat,var(--card2);background-blend-mode:normal;color:var(--text)}
+.btn.sm{font-size:16px;padding:11px 12px 9px}
+.btn:active,.k:active,.gk:active,.drow:active,.tg:active{transform:translate(1px,2px) rotate(-.7deg);transition:none}
+.link{font-family:var(--brush);font-weight:400;letter-spacing:.05em;color:var(--paint)}
+.danger{font-family:var(--brush);font-weight:400;letter-spacing:.04em}
+
+/* chips and pills as little daubs of paint */
+.chip{border-radius:0;padding:1px 9px;-webkit-mask:var(--m-chip) center/100% 100% no-repeat;mask:var(--m-chip) center/100% 100% no-repeat;
+  background:color-mix(in srgb,var(--c) 24%,transparent)}
+.pill{background:var(--tex-panel,none) center/240px repeat,var(--card2);border-radius:0}
+.dn{border-radius:0;background:color-mix(in srgb,var(--paint) 14%,var(--card2));color:var(--paint);font-family:var(--brush);font-weight:400;
+  -webkit-mask:var(--m-chip) center/100% 100% no-repeat;mask:var(--m-chip) center/100% 100% no-repeat}
+.stars b.on{color:var(--paint)}
+:root[data-theme="paper"] .dn,:root[data-theme="paper"] .link,:root[data-theme="paper"] .tabs button.on,:root[data-theme="paper"] .big-score b,
+:root[data-theme="paper"] .rank em,:root[data-theme="paper"] .cd b,:root[data-theme="paper"] .top h1 span{color:var(--accent)}
+:root[data-theme="paper"] .stars b.on{color:var(--accent2)}
+.tg{border-radius:0;-webkit-mask:var(--m-chip) center/100% 100% no-repeat;mask:var(--m-chip) center/100% 100% no-repeat;border:0}
+.tg::after{border-radius:3px}
+.tg.on{background:color-mix(in srgb,var(--paint) 45%,var(--card2))}
+.tg.on::after{background:var(--paint)}
+
+/* tab bar: a painted strip with a torn top edge */
+.tabs{background:var(--tex-panel,none) center/240px repeat,var(--bg2);border-top:0;backdrop-filter:none;-webkit-backdrop-filter:none;
+  -webkit-mask:var(--m-strip) top/100% 100% no-repeat;mask:var(--m-strip) top/100% 100% no-repeat;padding-top:12px}
+.tabs button{font-family:var(--brush);font-weight:400;letter-spacing:.06em;font-size:12.5px;text-transform:uppercase}
+.tabs button.on{color:var(--paint)}
+
+/* daily game tiles + weekday buttons: thick daubs of colour */
+.tile5{background:var(--tex-panel,none) center/240px repeat,var(--card2);font-family:var(--brush);font-weight:400;color:var(--muted)}
+.tile5.cur{background:var(--tex-panel,none) center/240px repeat,color-mix(in srgb,var(--paint) 40%,var(--card2));color:var(--text)}
+.tile5.G{background:var(--tex-paper,none) center/220px repeat,var(--good);background-blend-mode:multiply}
+.tile5.Y{background:var(--tex-paper,none) center/220px repeat,var(--warn);background-blend-mode:multiply}
+.tile5.R{background:var(--tex-paper,none) center/220px repeat,var(--bad);background-blend-mode:multiply}
+.gk,.wk{background:var(--tex-paper,none) center/220px repeat,color-mix(in srgb,var(--c) 82%,#141b24);background-blend-mode:multiply;
+  color:#fff7e8;font-family:var(--brush);font-weight:400;font-size:16px;letter-spacing:.04em;border:0!important}
+.gk small,.wk small{color:#fff7e8;opacity:.75;font-family:var(--font)}
+.gk.right,.k.right{background:var(--good)!important;color:#fff}
+.gk.wrong,.k.wrong{background:var(--bad)!important;color:#fff}
+.guess .k.sel{background:var(--paint)!important;color:var(--ink)}
+.guess .k.sel small{color:var(--ink)}
+.k{color:var(--text)}
+.k.ok-key{background:var(--tex-paper,none) center/220px repeat,var(--paint);background-blend-mode:multiply;color:var(--ink)}
+
+/* the play area stays calm: date in clean, heavy ink on a sheet of paper */
+#drill.game .gq{margin:6px 0 4px;padding:26px 12px;min-height:170px;flex:none}
+#drill.game .dbody{justify-content:center}
+.verdict small,.gfb .vline small,.spd{font-family:var(--font);letter-spacing:0;text-transform:none}
+.cd,.foot,.top p,.dhead p,.gh{text-shadow:0 1px 3px rgba(0,0,0,.55)}
+:root[data-theme="paper"] .cd,:root[data-theme="paper"] .foot,:root[data-theme="paper"] .top p,:root[data-theme="paper"] .dhead p,:root[data-theme="paper"] .gh{text-shadow:none}
+#drill.game .gdate,#drill .qask{color:#22190f}
+#drill .qcard{margin-top:12px}
+#drill .qcard:not(.g){flex:0 1 auto;min-height:150px;padding:20px 10px}
+.verdict{font-size:17px}
+#drill .qcard.ok,#drill .qcard.bad{box-shadow:none}
+#drill .qcard.ok{background:var(--tex-paper,none) center/220px repeat,#dcebc8}
+#drill .qcard.bad{background:var(--tex-paper,none) center/220px repeat,#f1d0c3}
+.qcard.g .qask{background:transparent}
+.dtop .icon{border-radius:0;border:0;background:var(--tex-panel,none) center/240px repeat,var(--card);-webkit-mask:var(--m-chip) center/100% 100% no-repeat;mask:var(--m-chip) center/100% 100% no-repeat}
+.dtitle{font-family:var(--brush);font-weight:400;letter-spacing:.04em;font-size:18px}
+.dtitle small{font-family:var(--font);letter-spacing:.02em}
+.verdict,.gfb .vline{font-family:var(--brush);font-weight:400;letter-spacing:.03em;font-size:19px}
+.fact{margin-top:12px}
+.fact p{font-family:var(--display);color:#22190f}
+.fact .fcat{color:#b5651d}
+.rcard .fact{background:var(--tex-paper,none) center/220px repeat,#efe3c6}
+
+/* score + rank */
+.big-score b{font-family:var(--brush);font-weight:400;font-size:72px;color:var(--paint);transform:rotate(-2deg);display:inline-block}
+.rank{font-family:var(--brush);font-weight:400;letter-spacing:.03em;font-size:21px}
+.rank em{color:var(--paint)}
+.cd b{font-family:var(--brush);font-weight:400;color:var(--paint)}
+.bigday{font-family:var(--brush);font-weight:400}
+.cal .c{border-radius:0}
+.cal .c.tgt{background:var(--paint);color:var(--ink)}
+.lesson summary{font-family:var(--brush);font-weight:400;letter-spacing:.03em;font-size:17px}
+.lesson .lb{color:var(--text)}
+.toast{border-radius:0;font-family:var(--brush);font-weight:400;letter-spacing:.04em;background:var(--paint);color:var(--ink);
+  -webkit-mask:var(--m-swipe) center/100% 100% no-repeat;mask:var(--m-swipe) center/100% 100% no-repeat}
+
+/* snappy, stepped motion instead of smooth easing */
+.qask,#drill.game .gdate,.fact,.sum{animation-timing-function:steps(4,end)!important}
+.qcard.bad,#drill.game .gfb.bad{animation:jolt .24s steps(3,end)}
+@keyframes jolt{33%{transform:translate(-4px,1px) rotate(-.8deg)}66%{transform:translate(3px,-1px) rotate(.6deg)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
 </style>
 </head>
 <body>
@@ -459,7 +598,7 @@ function randDate(m){const Y=ri(rangeLo(),rangeHi());m=m||ri(1,12);return {Y,m,d
 const KEY='ddojo.v1';
 function defaults(){return {items:{},recent:{},rounds:[],months:{},best:{},daily:{},modes:{},
   days:{last:null,count:0,total:0},totals:{n:0,c:0,ms:0},games:{},d3:{},
-  settings:{range:'1900-2099',sound:true,auto:true,nums:true}};}
+  settings:{range:'1900-2099',sound:true,auto:true,nums:true,theme:'dark'}};}
 let S=load();
 function load(){
   const d=defaults();
@@ -522,7 +661,7 @@ function whyFull(s){
   <div><i>3</i><span>${monthLine(s)}</span></div></div>`;
 }
 function verb(Y,m,d){const t=new Date(),k=Y*10000+m*100+d,n=t.getFullYear()*10000+(t.getMonth()+1)*100+t.getDate();return k<n?'What day was':k>n?'What day will be':'What day is';}
-function fullQ(Y,m,d){const s=solve(Y,m,d);return {key:'m'+m,type:'weekday',sub:verb(Y,m,d),ask:`${MONS[m-1]} ${d}, ${Y}`,ctx:`${MONS[m-1]} ${d}, ${Y}`,long:true,ans:s.wd,why:whyFull(s),month:m};}
+function fullQ(Y,m,d){const s=solve(Y,m,d);return {key:'m'+m,type:'weekday',sub:verb(Y,m,d),ask:`${MONS[m-1]} ${d}, ${Y}`,ctx:`${MONS[m-1]} ${d}, ${Y}`,fut:!isPast({Y,m,d}),long:true,ans:s.wd,why:whyFull(s),month:m};}
 
 /* ---------- drills ---------- */
 const DR={};
@@ -615,7 +754,7 @@ def({id:'step',title:'From doomsday to date',sub:'Given the year’s doomsday',t
   gen(){
     const m=parseInt(pickKey('step',range(12).map(i=>'m'+(i+1)),this.target).slice(1));
     const {Y,d}=randDate(m),s=solve(Y,m,d);
-    return {key:'m'+m,type:'weekday',sub:`${Y} doomsday is ${chip(s.dd)}${m<=2?(s.leap?' · leap':' · common'):''}`,ask:`${MONS[m-1]} ${d}`,ctx:`${MONS[m-1]} ${d}, ${Y}`,ans:s.wd,why:monthLine(s),month:m};
+    return {key:'m'+m,type:'weekday',sub:`${Y} doomsday is ${chip(s.dd)}${m<=2?(s.leap?' · leap':' · common'):''}`,ask:`${MONS[m-1]} ${d}`,ctx:`${MONS[m-1]} ${d}, ${Y}`,fut:!isPast({Y,m,d}),ans:s.wd,why:monthLine(s),month:m};
   }});
 def({id:'full',title:'Full date',sub:'The real thing, against the clock',target:10000,lesson:'together',
   desc:'Any date in your chosen year range → weekday. Every step in your head.',
@@ -637,7 +776,7 @@ def({id:'guided',title:'Guided walkthrough',sub:'Every step checked live',target
       {key:'dd',type:'weekday',q:`Doomsday of ${Y}`,ans:s.dd,why:`${s.anchor} + ${s.a} + ${s.b} + ${s.c} = ${sum} → ${chipN(s.dd)}`}];
     if(m<=2)steps.push({key:'leap',type:'yesno',q:`Is ${Y} a leap year?`,ans:s.leap?1:0,why:DR.leap.tip});
     steps.push({key:'ma',type:'keypad',q:`Doomsday date in ${MON[m-1]}`,ans:s.ma,reveal:`${MONS[m-1]} ${s.ma}`,why:`${MON[m-1]}: ${MNEMO[m-1]}`});
-    steps.push({key:'wd',type:'weekday',q:`${MONS[m-1]} ${d} is…`,ctx:`${MONS[m-1]} ${d}, ${Y}`,ans:s.wd,why:monthLine(s)});
+    steps.push({key:'wd',type:'weekday',q:`${MONS[m-1]} ${d} is…`,ctx:`${MONS[m-1]} ${d}, ${Y}`,fut:!isPast({Y,m,d}),ans:s.wd,why:monthLine(s)});
     return {guided:true,title:`${MON[m-1]} ${d}, ${Y}`,Y,m,d,steps,month:m};
   }});
 const STEP_NAMES={anchor:'Century anchor',a:'Year ÷ 12',b:'Remainder',c:'Remainder ÷ 4',dd:'Year doomsday',leap:'Leap year',ma:'Month doomsday',wd:'Final count'};
@@ -824,7 +963,7 @@ function answer(v){
   // feedback
   const tg=R.D.target,spd=ms<=tg?'fast':ms<=tg*2?'ok':'slow';
   const wait=!ok||!S.settings.auto;
-  $('#fb').innerHTML=`<div class="verdict ${ok?'ok':'bad'}"><span>${st.ctx?`${ok?'✓':'✗'} ${st.ctx} was a ${lab(st)}`:ok?'✓ Correct':'✗ It’s '+lab(st)}</span><span class="spd ${spd}">${sec(ms)}</span></div>
+  $('#fb').innerHTML=`<div class="verdict ${ok?'ok':'bad'}"><span>${st.ctx?`${ok?'✓':'✗'} ${st.ctx} ${st.fut?'will be':'was'} a ${lab(st)}`:ok?'✓ Correct':'✗ It’s '+lab(st)}</span><span class="spd ${spd}">${sec(ms)}</span></div>
     <div class="why">${st.why}</div>${wait?`<button class="btn ${ok?'':'ghost'} next" data-act="next">${last?'Next':'Continue'} →</button>`:''}`;
   $('#hOk').textContent=R.ok;$('#hStreak').textContent=R.streak;$('#hS').className=R.streak>=5?'hot':'';
   $('#hTime').textContent=sec(ms);
@@ -1047,6 +1186,8 @@ function vSettings(){
   return `<div class="gh">Settings</div><section class="card">
     <div class="set"><div>Year range<small>For year and full-date drills</small></div>
       <select id="srange">${[['2000-2099','2000–2099'],['1900-2099','1900–2099'],['1800-2199','1800–2199'],['1600-2399','1600–2399']].map(([v,l])=>`<option value="${v}" ${S.settings.range===v?'selected':''}>${l}</option>`).join('')}</select></div>
+    <div class="set"><div>Look<small>Dark paint, or light parchment for daytime</small></div>
+      <select id="stheme">${[['dark','Dark paint'],['paper','Parchment'],['auto','Match phone']].map(([v,l])=>`<option value="${v}" ${(S.settings.theme||'dark')===v?'selected':''}>${l}</option>`).join('')}</select></div>
     <div class="set"><div>Sound & haptics</div><button class="tg ${S.settings.sound?'on':''}" data-act="toggle" data-k="sound" aria-label="Sound"></button></div>
     <div class="set"><div>Auto-advance<small>Move on after a correct answer</small></div><button class="tg ${S.settings.auto?'on':''}" data-act="toggle" data-k="auto" aria-label="Auto-advance"></button></div>
     <div class="set"><div>Numbers on day buttons<small>Shows 0–6 under each weekday</small></div><button class="tg ${S.settings.nums?'on':''}" data-act="toggle" data-k="nums" aria-label="Numbers"></button></div>
@@ -1293,6 +1434,7 @@ document.addEventListener('click',e=>{
 document.addEventListener('change',e=>{
   if(e.target.id==='ytc'){ytC=+e.target.value;$('#ytab').innerHTML=yearTable(ytC);}
   else if(e.target.id==='srange'){S.settings.range=e.target.value;save();}
+  else if(e.target.id==='stheme'){S.settings.theme=e.target.value;save();paintSkin();}
   else if(['sm','sd','sy'].includes(e.target.id)){readSolve();if(SV.revealed)renderSolveResult();}
 });
 document.addEventListener('input',e=>{if(['sd','sy'].includes(e.target.id)){SV.revealed=false;$('#sres').innerHTML='';}});
@@ -1311,6 +1453,82 @@ document.addEventListener('keydown',e=>{
   else if(/^[0-6]$/.test(e.key))answer(+e.key);
 });
 
+/* ---------- painterly skin ---------- */
+// Everything is painted once at startup with a seeded random generator, so the look is identical on every visit.
+function rng32(seed){return()=>{seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+const svgURL=s=>`url("data:image/svg+xml,${encodeURIComponent(s)}")`;
+// Ragged outline in a 100×100 box, stretched over the element. jx/jy = how far edges wander (% of width/height).
+function roughMask(seed,jx,jy,n){
+  const r=rng32(seed),p=[],e=j=>(r()-.5)*j;n=n||22;
+  for(let i=0;i<=n;i++)p.push([i*100/n,jy/2+e(jy)]);
+  for(let i=1;i<=n;i++)p.push([100-jx/2+e(jx),i*100/n]);
+  for(let i=n-1;i>=0;i--)p.push([i*100/n,100-jy/2+e(jy)]);
+  for(let i=n-1;i>0;i--)p.push([jx/2+e(jx),i*100/n]);
+  return svgURL(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'><path d='M${p.map(q=>q[0].toFixed(2)+' '+q[1].toFixed(2)).join('L')}Z'/></svg>`);
+}
+// A single brush swipe: wavy top/bottom, frayed bristle ends
+function swipeMask(seed){
+  const r=rng32(seed),top=[],bot=[];
+  for(let i=0;i<=30;i++){const x=3+i*94/30,w=Math.sin(i/30*Math.PI);top.push([x,10-w*6+(r()-.5)*5]);bot.push([x,90+w*6-(r()-.5)*5]);}
+  const endL=[],endR=[];for(let y=12;y<=88;y+=6){endL.push([(r()*3.5),y]);endR.push([100-r()*3.5,y]);}
+  const pts=[...top,...endR,...bot.reverse(),...endL.reverse()];
+  return svgURL(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'><path d='M${pts.map(q=>q[0].toFixed(2)+' '+q[1].toFixed(2)).join('L')}Z'/></svg>`);
+}
+function canvas(w,h){const c=document.createElement('canvas');c.width=w;c.height=h;return [c,c.getContext('2d')];}
+// loose oil strokes: a bundle of thin parallel bristle lines along a gentle curve
+function stroke(x,r,cx,cy,len,wid,ang,col,alpha){
+  x.save();x.translate(cx,cy);x.rotate(ang);x.strokeStyle=col;x.lineCap='round';
+  const bristles=Math.max(3,wid/2|0),bend=(r()-.5)*len*.35;
+  for(let b=0;b<bristles;b++){const off=(b/bristles-.5)*wid;x.globalAlpha=alpha*(.45+r()*.55);x.lineWidth=1.2+r()*2.4;
+    x.beginPath();x.moveTo(-len/2,off);x.quadraticCurveTo(0,off+bend,len/2*(.8+r()*.25),off+(r()-.5)*3);x.stroke();}
+  x.restore();
+}
+function grainTexture(){
+  const [c,x]=canvas(160,160),im=x.createImageData(160,160),r=rng32(11);
+  for(let i=0;i<im.data.length;i+=4){const v=105+r()*150|0;im.data[i]=im.data[i+1]=im.data[i+2]=v;im.data[i+3]=255;}
+  x.putImageData(im,0,0);x.globalAlpha=.07;           // linen weave
+  for(let i=0;i<160;i+=2){x.fillStyle=i%4?'#000':'#fff';x.fillRect(0,i,160,1);x.fillRect(i,0,1,160);}
+  return c.toDataURL();
+}
+function tileTexture(base,cols,seed,a){
+  const [c,x]=canvas(240,240),r=rng32(seed);x.fillStyle=base;x.fillRect(0,0,240,240);
+  for(let i=0;i<90;i++){const cx=r()*240,cy=r()*240;for(const dx of [-240,0,240])for(const dy of [-240,0,240])
+    {const rr=rng32(seed*977+i);stroke(x,rr,cx+dx,cy+dy,30+rr()*70,6+rr()*14,-.5+rr()*.5,cols[i%cols.length],a);}}
+  return c.toDataURL('image/jpeg',.82);
+}
+function backdropTexture(dark){
+  const W=540,H=1080,[c,x]=canvas(W,H),r=rng32(dark?2026:1453);
+  const base=dark?'#111b27':'#e6d7b8',cool=dark?['#18283a','#1f3650','#264766','#1b3a4a','#2b5a74','#0e1621']:['#eadcc0','#dfcca7','#f1e6cf','#d8c39b','#e9d6b0','#cdb48a'],
+        warm=dark?['#a5662a','#c8862f','#8a3b2e','#e0a43a']:['#c98a3a','#b5651d','#9a4a2a','#d9a650'];
+  x.fillStyle=base;x.fillRect(0,0,W,H);
+  for(let i=0;i<520;i++)stroke(x,r,r()*W,r()*H,50+r()*190,10+r()*30,-.9+r()*.6,cool[i%cool.length],dark?.32:.4);
+  // warm glow at the corners, like the edge of a sunset canvas
+  for(let i=0;i<70;i++){const corner=i%2?[r()*W*.5,r()*H*.12]:[W-r()*W*.5,H-r()*H*.14];
+    stroke(x,r,corner[0],corner[1],40+r()*120,8+r()*18,-.8+r()*.5,warm[i%warm.length],dark?.22:.25);}
+  // splatters
+  for(let s=0;s<9;s++){const sx=r()*W,sy=r()<.5?r()*H*.18:H-r()*H*.2,col=warm[s%warm.length];x.fillStyle=col;
+    for(let d=0;d<26;d++){x.globalAlpha=.25+r()*.45;x.beginPath();const rad=r()*r()*7+.6;x.arc(sx+(r()-.5)*90,sy+(r()-.5)*70,rad,0,7);x.fill();}}
+  return c.toDataURL('image/jpeg',.8);
+}
+const SKIN={};
+function paintSkin(){
+  const pref=S.settings.theme||'dark',dark=pref==='auto'?!matchMedia('(prefers-color-scheme: light)').matches:pref!=='paper';
+  document.documentElement.dataset.theme=dark?'dark':'paper';
+  const css=document.documentElement.style,key=dark?'d':'p';
+  if(!SKIN.grain){
+    SKIN.grain=grainTexture();
+    SKIN.paper=tileTexture('#efe3c6',['#e4d4b2','#f6ecd8','#e9dbbd','#d9c6a1'],5,.35);
+    css.setProperty('--tex-grain',`url(${SKIN.grain})`);css.setProperty('--tex-paper',`url(${SKIN.paper})`);
+    [['--m-a',roughMask(1,2.2,3.2)],['--m-b',roughMask(2,2.6,2.8)],['--m-c',roughMask(3,1.8,3.6)],['--m-chip',roughMask(4,7,12,10)],
+     ['--m-strip',roughMask(5,0,10,40)],['--m-swipe',swipeMask(6)]].forEach(([k,v])=>css.setProperty(k,v));
+  }
+  if(!SKIN[key]){SKIN[key]={panel:dark?tileTexture('#1a2a3b',['#22364b','#15222f','#284058','#1d3343'],9,.45):tileTexture('#f3e9d3',['#eadcbf','#f8f0de','#e3d2af'],9,.4),backdrop:backdropTexture(dark)};}
+  css.setProperty('--tex-panel',`url(${SKIN[key].panel})`);css.setProperty('--tex-backdrop',`url(${SKIN[key].backdrop})`);
+  document.querySelectorAll('meta[name=theme-color]').forEach(m=>{m.removeAttribute('media');m.content=dark?'#0d151f':'#dccba8';});
+}
+matchMedia('(prefers-color-scheme: light)').addEventListener?.('change',()=>{if((S.settings.theme||'dark')==='auto')paintSkin();});
+
+paintSkin();
 gBoot();
 render();
 setInterval(tick,1000);
