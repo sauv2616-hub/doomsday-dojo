@@ -523,9 +523,27 @@ h3{font-family:var(--brush);font-weight:400;letter-spacing:.03em;font-size:19px}
 .qcard.bad,#drill.game .gfb.bad{animation:jolt .24s steps(3,end)}
 @keyframes jolt{33%{transform:translate(-4px,1px) rotate(-.8deg)}66%{transform:translate(3px,-1px) rotate(.6deg)}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important}}
+
+/* ===== Daily opening screen ===== */
+#scene{position:fixed;inset:0;width:100%;height:100%;z-index:-1;display:none}
+body.hero-on #scene{display:block}
+.hero{display:flex;flex-direction:column;align-items:center;text-align:center;
+  min-height:calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 110px)}
+.hero-top{margin-top:7vh}
+.hero h1{font-family:var(--brush);font-weight:400;font-size:clamp(54px,17vw,84px);line-height:1;margin:0;color:#f6eedc;
+  transform:rotate(-2.5deg);letter-spacing:.02em;text-shadow:0 3px 0 rgba(0,0,0,.35),0 0 24px rgba(0,0,0,.35)}
+.hero-sub{margin:14px 0 0;font-weight:800;font-size:15px;letter-spacing:.42em;text-transform:uppercase;color:#f2c14b;padding-left:.42em;text-shadow:0 1px 3px rgba(0,0,0,.6)}
+.hero-tag{margin:14px auto 0;max-width:300px;font-size:14.5px;line-height:1.5;letter-spacing:.06em;color:#d9d2c2;text-shadow:0 1px 3px rgba(0,0,0,.7)}
+.hero-bottom{margin-top:auto;width:100%;max-width:400px}
+.hero-play{font-size:26px;padding:22px 20px 19px}
+.hero-meta{margin-top:12px;font-size:12.5px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:#bfb7a6;text-shadow:0 1px 3px rgba(0,0,0,.8)}
+.hero-meta i{font-style:normal;color:#6cb04f}
+.hero .link{color:#f2c14b;padding:10px;font-size:15px;text-shadow:0 1px 3px rgba(0,0,0,.8)}
+.sheet .rules span{color:var(--text)}
 </style>
 </head>
 <body>
+<canvas id="scene" aria-hidden="true"></canvas>
 <main id="view"></main>
 <nav class="tabs"><div class="in" id="tabs"></div></nav>
 <div id="drill" hidden></div>
@@ -834,6 +852,7 @@ function render(){
   $('#tabs').innerHTML=TABS.map(([k,l])=>`<button class="${k===on?'on':''}" data-tab="${k}">${ICON[k]}${l}</button>`).join('');
   $('#view').innerHTML=({daily:vDaily,train:vTrain,learn:vLearn,solve:vSolve})[tab]();
   if(tab==='solve'&&SV.revealed)renderSolveResult();
+  const g=today();showScene(tab==='daily'&&!(g&&g.done));
 }
 
 function vTrain(){
@@ -1328,14 +1347,14 @@ function vDaily(){
   const head=`<div class="dhead"><div class="kick">Daily Three · #${p}</div><h1>Doomsday</h1><p>${WD[t.getDay()]}, ${MON[t.getMonth()]} ${t.getDate()}, ${t.getFullYear()}</p></div>`;
   if(!g||!g.done){
     const n=LB.rows?LB.rows.length:0;
-    return `${head}<div class="tiles5">${range(NQ).map(i=>`<div class="tile5">${i+1}</div>`).join('')}</div>
-    <section class="card"><div class="rules">
-      <div><b class="n">3</b><span>Three dates, each one special — the same for everyone today.</span></div>
-      <div><b class="n">7</b><span>Tap the weekday it fell on, then find out what happened.</span></div>
-      <div><b class="n">⏱</b><span>Points for every right answer, plus a bonus for speed.</span></div></div>
-      <button class="btn" data-act="g-play">Play today’s three</button></section>
-    <p class="cd">${online()?(n?`${n} player${n===1?'':'s'} so far today`:'Be the first to play today'):'Rankings not connected yet'}</p>
-    <p class="foot">New in the Doomsday method? Learn it in the Learn tab, then drill it in Train.</p>`;
+    return `<section class="hero"><div class="hero-top">
+        <h1>Doomsday</h1>
+        <p class="hero-sub">The Daily Three</p>
+        <p class="hero-tag">3 dates · name the weekday · every date has a story</p></div>
+      <div class="hero-bottom">
+        <button class="btn hero-play" data-act="g-play">Play today’s three</button>
+        <div class="hero-meta">#${p} · ${WDS[t.getDay()]}, ${MONS[t.getMonth()]} ${t.getDate()}${online()&&n?` · <i>●</i> ${n} played`:''}</div>
+        <button class="link" data-act="how">How to play</button></div></section>`;
   }
   const sc=(LB.rows||[]).filter(r=>r.client_id!==S.cid).map(r=>r.score),top=topPct(g.score,sc);
   const rankTxt=!online()?'Rankings not connected yet'
@@ -1417,6 +1436,8 @@ document.addEventListener('click',e=>{
   else if(act==='again'){const id=R.id,mode=R.mode;R=null;startDrill(id,mode);}
   else if(act==='g-play')gStart();
   else if(act==='g-quit')gQuit();
+  else if(act==='how')openHow();
+  else if(act==='how-close')closeSheet();
   else if(act==='g-next')gNext();
   else if(act==='g-share')gShare();
   else if(act==='g-refresh'){sbLoad(puzzleNo());}
@@ -1528,6 +1549,139 @@ function paintSkin(){
 }
 matchMedia('(prefers-color-scheme: light)').addEventListener?.('change',()=>{if((S.settings.theme||'dark')==='auto')paintSkin();});
 
+/* ---------- opening scene: the ages of humanity ----------
+   Painted once per screen size onto a fixed canvas behind the Daily start screen.
+   Left to right: Rome → Industrial Revolution → modern city → far future, under a dusk sky with a Dyson sphere. */
+function drawScene(cv){
+  const dpr=Math.min(2,window.devicePixelRatio||1),w=innerWidth,h=innerHeight;
+  cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr);
+  const x=cv.getContext('2d');x.setTransform(dpr,0,0,dpr,0,0);
+  const r=rng32(1453),U=Math.min(w/375,h/700)*1.15,H0=Math.min(h*.68,h-250);
+  const wob=(pts,j)=>{x.beginPath();pts.forEach((p,i)=>{const px=p[0]+(r()-.5)*j,py=p[1]+(r()-.5)*j;i?x.lineTo(px,py):x.moveTo(px,py);});x.closePath();};
+  const rect=(x0,y0,ww,hh,col)=>{x.fillStyle=col;wob([[x0,y0+hh],[x0,y0],[x0+ww,y0],[x0+ww,y0+hh]],1.2*U);x.fill();};
+  const dot=(cx,cy,rad,col,a)=>{x.globalAlpha=a;x.fillStyle=col;x.beginPath();x.arc(cx,cy,rad,0,7);x.fill();x.globalAlpha=1;};
+
+  // --- sky: dusk bands blended with horizontal brush strokes (no smooth gradients)
+  const sky=['#0b1626','#0f1e35','#142a45','#1b3654','#24435e','#3a4b62','#6a5160','#a8644a','#d9823f'];
+  const bh=H0/sky.length;
+  sky.forEach((c,i)=>{x.fillStyle=c;x.fillRect(0,i*bh,w,bh+1);});
+  for(let k=0;k<900;k++){const y=r()*H0,i=Math.min(sky.length-1,Math.floor(y/bh)+(r()<.5?0:(r()<.5?1:-1)));
+    stroke(x,r,r()*w,y,50+r()*170,5+r()*12,(r()-.5)*.12,sky[Math.max(0,i)],.55);}
+  // warm afterglow behind the ancient city, cooler toward the future
+  for(let k=0;k<110;k++)stroke(x,r,r()*w*.55,H0-r()*h*.14,40+r()*120,5+r()*10,(r()-.5)*.1,['#f0a04a','#e07a3a','#f2c14b'][k%3],.22);
+  for(let k=0;k<70;k++)stroke(x,r,w*.6+r()*w*.4,H0-r()*h*.18,40+r()*110,5+r()*9,(r()-.5)*.1,['#2b6f86','#3fb0a6','#24506e'][k%3],.18);
+  // stars
+  for(let k=0;k<140;k++){const sy=r()*H0*.55;dot(r()*w,sy,r()*1.3+.3,'#fff3dc',.25+r()*.6*(1-sy/(H0*.55)));}
+  // a thin crescent moon over Rome
+  const mx=w*.1,my=H0-118*U,mr=10*U;
+  { const [mc,m]=canvas(Math.ceil(mr*2+4),Math.ceil(mr*2+4));m.fillStyle='#f3e3c0';m.beginPath();m.arc(mr+2,mr+2,mr,0,7);m.fill();
+    m.globalCompositeOperation='destination-out';m.beginPath();m.arc(mr+2+mr*.45,mr+2-mr*.15,mr*.92,0,7);m.fill();
+    x.globalAlpha=.9;x.drawImage(mc,mx-mr-2,my-mr-2);x.globalAlpha=1; }
+
+  // --- the Dyson sphere: a star wrapped in a lattice of collector rings
+  const dx=w*.8,dy=Math.max(h*.36,Math.min(h*.4,H0-130*U)),R=Math.min(w*.085,h*.042);
+  for(let k=7;k>0;k--)dot(dx,dy,R*(.25+k*.22),'#ffd27a',.05+(7-k)*.012);
+  dot(dx,dy,R*.42,'#fff1c8',.95);dot(dx,dy,R*.28,'#ffffff',.9);
+  for(let k=0;k<40;k++){const a=r()*6.28,l=R*(1.1+r()*.9);stroke(x,r,dx+Math.cos(a)*l*.6,dy+Math.sin(a)*l*.6,R*.5,3,a,'#ffd27a',.12);}
+  x.save();x.translate(dx,dy);x.lineCap='round';
+  [0,.55,1.1,1.65,2.2,2.75].forEach((rot,i)=>{x.save();x.rotate(rot);
+    x.strokeStyle='#e9b24a';x.globalAlpha=.85;x.lineWidth=1.3;x.beginPath();x.ellipse(0,0,R,R*(.22+i%3*.12),0,0,6.29);x.stroke();
+    x.setLineDash([R*.18,R*.1]);x.strokeStyle='#8a6a2e';x.lineWidth=3.2;x.globalAlpha=.8;x.beginPath();x.ellipse(0,0,R,R*(.22+i%3*.12),0,0,3.14);x.stroke();x.setLineDash([]);x.restore();});
+  x.globalAlpha=.9;x.strokeStyle='#f2c14b';x.lineWidth=1.5;x.beginPath();x.arc(0,0,R,0,6.29);x.stroke();x.restore();x.globalAlpha=1;
+
+  // --- far hills
+  x.fillStyle='#1a2a3d';x.beginPath();x.moveTo(0,H0);
+  for(let i=0;i<=24;i++){const px=i*w/24;x.lineTo(px,H0-(14+Math.sin(i*.9)*9+r()*8)*U);}x.lineTo(w,H0);x.closePath();x.fill();
+  for(let k=0;k<60;k++)stroke(x,r,r()*w,H0-r()*20*U,40+r()*80,5+r()*8,(r()-.5)*.2,'#23364c',.35);
+
+  // --- ROME (left): temple, Colosseum, cypresses, aqueduct
+  const stone='#2a1e22',glow='#d9823f';
+  // temple with pediment and columns
+  { const tx=w*.012,tw=30*U,th=26*U,top=H0-th;
+    rect(tx-2*U,H0-4*U,tw+4*U,4*U,stone);
+    for(let c=0;c<5;c++)rect(tx+c*(tw-4*U)/4,top+7*U,3.6*U,th-11*U,stone);
+    x.fillStyle=stone;wob([[tx-3*U,top+7*U],[tx+tw/2,top-4*U],[tx+tw+3*U,top+7*U]],U);x.fill(); }
+  // Colosseum: three tiers of arches, broken at the top right
+  { const cx=w*.235,cw=56*U,ch=40*U,top=H0-ch,left=cx-cw/2;
+    x.fillStyle=stone;wob([[left,H0],[left,top+4*U],[left+cw*.25,top],[left+cw*.7,top],[left+cw*.72,top+9*U],[left+cw,top+13*U],[left+cw,H0]],U);x.fill();
+    for(let t=0;t<3;t++)for(let a=0;a<7;a++){const ax=left+4*U+a*(cw-8*U)/7,ay=top+6*U+t*11*U;
+      if(t===0&&a>4)continue;x.fillStyle=glow;x.globalAlpha=.55+r()*.3;x.beginPath();x.moveTo(ax,ay+8*U);x.lineTo(ax,ay+3*U);x.arc(ax+2.6*U,ay+3*U,2.6*U,Math.PI,0);x.lineTo(ax+5.2*U,ay+8*U);x.closePath();x.fill();x.globalAlpha=1;} }
+  // cypress trees
+  [[w*.11,40],[w*.125,30],[w*.335,42]].forEach(([tx,th])=>{x.fillStyle='#131a17';x.beginPath();x.ellipse(tx,H0-th*U/2,3.6*U,th*U/2,0,0,6.29);x.fill();});
+  // aqueduct bridging into the industrial age
+  { const ax=w*.3,aw=w*.09,ah=22*U,top=H0-ah;rect(ax,top,aw,4*U,stone);
+    const n=Math.max(3,Math.round(aw/(9*U)));for(let a=0;a<n;a++){const px=ax+a*aw/n;rect(px,top+4*U,2.6*U,ah-4*U,stone);}
+    rect(ax+aw-2.6*U,top+4*U,2.6*U,ah-4*U,stone); }
+
+  // --- INDUSTRIAL (centre-left): sawtooth factory, smokestacks, clock tower
+  const brick='#1d1d24',lamp='#e9a03b';
+  { const fx=w*.385,fw=w*.12,fh=18*U,top=H0-fh;rect(fx,top,fw,fh,brick);
+    const teeth=5;for(let t=0;t<teeth;t++){const px=fx+t*fw/teeth;x.fillStyle=brick;wob([[px,top],[px,top-8*U],[px+fw/teeth,top]],.8*U);x.fill();}
+    for(let i=0;i<10;i++)for(let j=0;j<2;j++)if(r()<.7){x.globalAlpha=.55+r()*.35;x.fillStyle=lamp;x.fillRect(fx+3*U+i*(fw-6*U)/10,top+4*U+j*7*U,3*U,3.5*U);x.globalAlpha=1;}
+    [[.4,50],[.44,58],[.485,44]].forEach(([sx,sh])=>{const px=w*sx,py=H0-sh*U;rect(px,py,5*U,sh*U,brick);rect(px-1*U,py,7*U,2.5*U,'#2b2b33');
+      for(let p=0;p<16;p++){const k=p/16;stroke(x,r,px+2.5*U+k*36*U+r()*6*U,py-6*U-k*55*U-r()*8*U,(10+k*22)*U,(5+k*10)*U,-.3+r()*.4,['#4a5160','#5d6472','#3a404c'][p%3],.4*(1-k*.7));}}); }
+  // clock tower with a lit face
+  { const px=w*.515,tw=8*U,th=66*U,top=H0-th;rect(px,top,tw,th,brick);
+    x.fillStyle=brick;wob([[px-1*U,top],[px+tw/2,top-14*U],[px+tw+1*U,top]],.6*U);x.fill();
+    dot(px+tw/2,top+9*U,3.2*U,'#f6d58a',.95);dot(px+tw/2,top+9*U,4.4*U,'#f6d58a',.25); }
+
+  // --- MODERN (centre-right): skyscrapers with lit windows
+  const glass='#111a27';
+  [[.56,56,11],[.59,84,10],[.618,104,12],[.65,70,11],[.677,90,9],[.705,60,12]].forEach(([sx,sh,sw],i)=>{
+    const px=w*sx,ww=sw*U,hh=sh*U,top=H0-hh;rect(px,top,ww,hh,glass);
+    if(i===2){rect(px+ww/2-.6*U,top-18*U,1.2*U,18*U,glass);dot(px+ww/2,top-18*U,1.4*U,'#ff6b5a',.9);}
+    for(let wy=top+3*U;wy<H0-4*U;wy+=4.2*U)for(let wx=px+2*U;wx<px+ww-2*U;wx+=3.2*U)if(r()<.38){x.globalAlpha=.35+r()*.5;x.fillStyle='#f2c14b';x.fillRect(wx,wy,1.6*U,2*U);x.globalAlpha=1;}});
+
+  // --- FUTURE (right): slender spires, a glowing dome, a rocket, a space elevator
+  const fut='#0e2230',cyan='#5fd6e0';
+  [[.755,104,8],[.795,132,6.5],[.835,92,9],[.955,118,7.5]].forEach(([sx,sh,sw])=>{
+    const px=w*sx,top=H0-sh*U;x.fillStyle=fut;wob([[px-sw*U/2,H0],[px-sw*U*.18,top+sh*U*.25],[px,top],[px+sw*U*.18,top+sh*U*.25],[px+sw*U/2,H0]],.6*U);x.fill();
+    for(let k=0;k<6;k++)dot(px+(r()-.5)*sw*U*.4,top+sh*U*(.2+k*.13),1.1*U,cyan,.75);
+    dot(px,top,1.6*U,cyan,.9);});
+  // tilted ring around the tallest spire
+  x.save();x.translate(w*.795,H0-100*U);x.rotate(-.18);x.strokeStyle=cyan;x.globalAlpha=.75;x.lineWidth=1.6*U;x.beginPath();x.ellipse(0,0,15*U,4*U,0,0,6.29);x.stroke();x.restore();x.globalAlpha=1;
+  // glowing dome
+  { const cx=w*.895,rad=17*U;x.fillStyle=fut;x.beginPath();x.ellipse(cx,H0,rad,rad*.85,0,Math.PI,0);x.fill();
+    x.strokeStyle=cyan;x.globalAlpha=.55;x.lineWidth=1;for(let k=1;k<4;k++){x.beginPath();x.ellipse(cx,H0,rad*k/4,rad*.85,0,Math.PI,0);x.stroke();}
+    x.beginPath();x.ellipse(cx,H0,rad,rad*.42,0,Math.PI,0);x.stroke();x.globalAlpha=1; }
+  // space elevator: a hair-thin cable to the top of the sky with a climber on it
+  { const ex=w*.975;x.strokeStyle='#9fe3ea';x.globalAlpha=.5;x.lineWidth=1;x.beginPath();x.moveTo(ex,H0);x.lineTo(ex,0);x.stroke();
+    x.globalAlpha=1;rect(ex-2*U,H0*.42,4*U,5*U,'#cfeff2');rect(ex-5*U,H0-6*U,10*U,6*U,fut); }
+  // rocket climbing on a plume
+  { const rx=w*.87,ry=H0-138*U;
+    for(let k=0;k<26;k++){const t=k/26;stroke(x,r,rx+(r()-.5)*4*U*t,ry+14*U+t*(H0-ry-20*U),14*U,(3+t*7)*U,Math.PI/2+(r()-.5)*.2,['#fff3dc','#f2c14b','#e8862a','#8a93a0'][Math.min(3,Math.floor(t*4))],.5*(1-t*.5));}
+    x.fillStyle='#e8edf2';wob([[rx-2.4*U,ry+14*U],[rx-2.4*U,ry+3*U],[rx,ry-3*U],[rx+2.4*U,ry+3*U],[rx+2.4*U,ry+14*U]],.3*U);x.fill();
+    dot(rx,ry+16*U,2.6*U,'#fff1c8',.9); }
+
+  // --- ground and river: a dark band with reflected lights
+  x.fillStyle='#0a121c';x.fillRect(0,H0,w,h-H0);
+  for(let k=0;k<260;k++)stroke(x,r,r()*w,H0+r()*(h-H0),40+r()*140,5+r()*10,(r()-.5)*.06,['#101c2a','#0c1622','#16263a','#0a1018'][k%4],.5);
+  for(let k=0;k<70;k++){const px=r()*w,c=px<w*.3?'#d9823f':px<w*.52?'#e9a03b':px<w*.73?'#f2c14b':'#5fd6e0';
+    stroke(x,r,px,H0+6+r()*h*.07,8+r()*22,2+r()*3,(r()-.5)*.05,c,.18);}
+  x.globalAlpha=.35;x.fillStyle='#f2c14b';x.fillRect(0,H0,w,1);x.globalAlpha=1;
+
+  // --- a final light pass of brush texture so everything reads as one painting
+  for(let k=0;k<160;k++)stroke(x,r,r()*w,r()*h,30+r()*90,6+r()*12,(r()-.5)*.4,['#ffffff','#000000'][k%2],.035);
+}
+let sceneW=0,sceneH=0,sceneTimer=0;
+function showScene(on){
+  document.body.classList.toggle('hero-on',on);
+  if(!on)return;
+  const cv=document.getElementById('scene');
+  if(cv&&(sceneW!==innerWidth||Math.abs(sceneH-innerHeight)>80)){sceneW=innerWidth;sceneH=innerHeight;drawScene(cv);}
+}
+addEventListener('resize',()=>{clearTimeout(sceneTimer);sceneTimer=setTimeout(()=>{if(document.body.classList.contains('hero-on'))showScene(true);},200);});
+function openHow(){
+  $('#sheet').innerHTML=`<div class="sheet-bg" data-act="sheet-close"><div class="sheet" data-stop>
+    <div class="grab"></div><h2>How to play</h2>
+    <div class="rules" style="margin-top:14px">
+      <div><b class="n">3</b><span>Three dates a day, each one special — the same for everyone.</span></div>
+      <div><b class="n">7</b><span>Tap the weekday each date fell on. Then find out what happened that day.</span></div>
+      <div><b class="n">⏱</b><span>200 points for every right answer plus up to 134 for speed. Three perfect answers make 1000.</span></div>
+      <div><b class="n">%</b><span>See where you rank among today’s players, then share your tiles.</span></div></div>
+    <p>New to working out weekdays? The <b>Learn</b> tab teaches the Doomsday method, and <b>Train</b> drills each step.</p>
+    <button class="btn" data-act="how-close">Got it</button></div></div>`;
+}
 paintSkin();
 gBoot();
 render();
