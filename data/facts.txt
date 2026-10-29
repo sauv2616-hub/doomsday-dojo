@@ -1,0 +1,731 @@
+# Doomsday Daily date library
+# One fact per line:  DATE|CAT|TEXT
+#   DATE  YYYY-MM-DD (Gregorian). Add a trailing J when the source date is on the Julian
+#         (old-style) calendar; the build converts it and keeps the original for display.
+#   CAT   h history · s science · p space · k sky · c culture · b born · f fiction
+# Facts are shown only after the player answers, so naming the weekday is fine.
+# Run:  python3 build_facts.py   (validates, converts, extends the schedule, writes facts.js)
+
+## ---------------- history ----------------
+1066-09-25J|h|Harold II of England defeated a Norse invasion at the Battle of Stamford Bridge
+1066-10-14J|h|The Battle of Hastings: William of Normandy defeated King Harold II
+1066-12-25J|h|William the Conqueror was crowned King of England in Westminster Abbey
+1099-07-15J|h|Crusaders captured Jerusalem at the end of the First Crusade
+1170-12-29J|h|Archbishop Thomas Becket was murdered in Canterbury Cathedral
+1187-10-02J|h|Saladin took Jerusalem from the Crusaders
+1204-04-13J|h|Crusaders of the Fourth Crusade sacked Constantinople
+1215-06-15J|h|King John sealed Magna Carta at Runnymede
+1314-06-24J|h|Robert the Bruce won the Battle of Bannockburn
+1346-08-26J|h|English longbowmen won the Battle of Crécy
+1381-06-15J|h|Wat Tyler, leader of the Peasants' Revolt, was killed at Smithfield
+1415-10-25J|h|Henry V's army won the Battle of Agincourt on St Crispin's Day
+1429-05-08J|h|Joan of Arc lifted the siege of Orléans
+1431-05-30J|h|Joan of Arc was burned at the stake in Rouen
+1453-05-29J|h|Constantinople fell to the Ottoman Empire, ending the Byzantine Empire
+1485-08-22J|h|Richard III was killed at the Battle of Bosworth Field, ending the Wars of the Roses
+1492-01-02J|h|Granada surrendered, completing the Reconquista of Spain
+1492-08-03J|h|Christopher Columbus set sail from Palos de la Frontera on his first voyage
+1492-10-12J|h|Columbus's expedition sighted land in the Bahamas
+1494-06-07J|h|Spain and Portugal split the newly explored world in the Treaty of Tordesillas
+1498-05-20J|h|Vasco da Gama reached Calicut, India — the first sea voyage from Europe to India
+1509-06-24J|h|Henry VIII was crowned King of England
+1513-09-09J|h|The Battle of Flodden, the largest battle ever fought between England and Scotland
+1517-10-31J|h|Martin Luther's Ninety-five Theses, traditionally nailed to a church door in Wittenberg
+1519-09-20J|h|Ferdinand Magellan's fleet set out from Spain to sail around the world
+1521-04-27J|h|Ferdinand Magellan was killed at the Battle of Mactan in the Philippines
+1522-09-06J|h|The ship Victoria returned to Spain, completing the first voyage around the world
+1536-05-19J|h|Anne Boleyn was executed at the Tower of London
+1547-01-28J|h|Henry VIII died, leaving the throne to his nine-year-old son Edward VI
+1558-11-17J|h|Elizabeth I became Queen of England
+1582-10-15|h|The Gregorian calendar began — in Italy, Spain and Portugal the day before was October 4
+1588-08-08|h|The Battle of Gravelines broke the Spanish Armada
+1603-03-24J|h|Elizabeth I died and James VI of Scotland became James I of England
+1605-11-05J|h|The Gunpowder Plot to blow up Parliament was foiled
+1620-09-06J|h|The Mayflower set sail from Plymouth, England, for the New World
+1620-11-11J|h|The Mayflower Compact was signed off Cape Cod
+1649-01-30J|h|King Charles I was beheaded outside the Banqueting House in London
+1666-09-02J|h|The Great Fire of London began in a bakery on Pudding Lane
+1683-09-12|h|The Battle of Vienna ended the Ottoman siege of the city
+1688-11-05J|h|William of Orange landed at Torbay, beginning the Glorious Revolution
+1704-08-13|h|The Duke of Marlborough won the Battle of Blenheim
+1707-05-01J|h|The Acts of Union took effect, joining England and Scotland as Great Britain
+1746-04-16J|h|The Battle of Culloden, the last pitched battle on British soil
+1752-09-14|h|Britain switched to the Gregorian calendar — the previous day was September 2
+1773-12-16|h|The Boston Tea Party: colonists dumped 342 chests of tea into Boston Harbor
+1775-04-19|h|The Battles of Lexington and Concord began the American Revolutionary War
+1775-06-17|h|The Battle of Bunker Hill
+1776-07-04|h|The Continental Congress adopted the Declaration of Independence
+1776-12-25|h|George Washington's army crossed the icy Delaware River at night
+1777-10-17|h|A British army surrendered at Saratoga, a turning point of the Revolution
+1781-10-19|h|The British surrendered at Yorktown
+1783-09-03|h|The Treaty of Paris ended the American Revolutionary War
+1787-09-17|h|The United States Constitution was signed in Philadelphia
+1789-04-30|h|George Washington was inaugurated as the first US President
+1789-07-14|h|Revolutionaries stormed the Bastille in Paris
+1789-08-26|h|France adopted the Declaration of the Rights of Man and of the Citizen
+1791-12-15|h|The US Bill of Rights was ratified
+1793-01-21|h|King Louis XVI was guillotined in Paris
+1793-10-16|h|Marie Antoinette was executed in Paris
+1798-08-01|h|Nelson destroyed the French fleet at the Battle of the Nile
+1803-04-30|h|The Louisiana Purchase treaty was signed, doubling the size of the United States
+1804-05-14|h|Lewis and Clark's expedition set out to cross the American West
+1804-12-02|h|Napoleon crowned himself Emperor of the French in Notre-Dame
+1805-10-21|h|Nelson won the Battle of Trafalgar but was killed in the fighting
+1805-12-02|h|Napoleon's great victory at the Battle of Austerlitz
+1807-03-25|h|Britain abolished the slave trade with the Slave Trade Act
+1812-06-24|h|Napoleon's Grande Armée crossed the Neman River to invade Russia
+1812-09-07|h|The Battle of Borodino, the bloodiest day of the Napoleonic Wars
+1814-08-24|h|British troops burned the White House in Washington
+1815-06-09|h|The Congress of Vienna signed its Final Act, redrawing the map of Europe
+1815-06-18|h|Napoleon was defeated at the Battle of Waterloo
+1819-02-06|h|Stamford Raffles signed the treaty that founded modern Singapore
+1821-05-05|h|Napoleon died in exile on the island of Saint Helena
+1825-09-27|h|The Stockton and Darlington, the first public steam railway, opened
+1830-09-15|h|The Liverpool and Manchester Railway opened
+1833-08-28|h|Britain's Slavery Abolition Act received royal assent
+1836-03-02|h|Texas declared independence from Mexico
+1836-03-06|h|The Alamo fell after a 13-day siege
+1837-06-20|h|Victoria became Queen at age 18
+1838-06-28|h|Queen Victoria was crowned at Westminster Abbey
+1840-02-10|h|Queen Victoria married Prince Albert
+1840-05-01|h|The Penny Black, the world's first adhesive postage stamp, was issued
+1848-01-24|h|Gold was found at Sutter's Mill, sparking the California Gold Rush
+1848-02-21|h|Marx and Engels published The Communist Manifesto
+1848-07-19|h|The Seneca Falls Convention for women's rights opened
+1851-05-01|h|The Great Exhibition opened in London's Crystal Palace
+1854-10-25|h|The Charge of the Light Brigade at Balaclava
+1857-05-10|h|The Indian Rebellion began at Meerut
+1861-04-12|h|Confederate guns fired on Fort Sumter, starting the American Civil War
+1863-01-01|h|Lincoln's Emancipation Proclamation took effect
+1863-01-10|h|The London Underground, the world's first underground railway, opened
+1863-07-01|h|The Battle of Gettysburg began
+1863-11-19|h|Abraham Lincoln delivered the Gettysburg Address
+1865-04-09|h|Robert E. Lee surrendered at Appomattox Court House
+1865-04-14|h|Abraham Lincoln was shot at Ford's Theatre
+1865-12-06|h|The 13th Amendment was ratified, abolishing slavery in the United States
+1867-03-30|h|The United States agreed to buy Alaska from Russia
+1867-07-01|h|Canada became a self-governing dominion — Canada Day
+1868-01-03|h|The Meiji Restoration returned power to Japan's emperor
+1869-05-10|h|The golden spike completed America's first transcontinental railroad
+1869-11-17|h|The Suez Canal opened
+1871-01-18|h|The German Empire was proclaimed in the Hall of Mirrors at Versailles
+1871-10-08|h|The Great Chicago Fire began
+1876-06-25|h|The Battle of the Little Bighorn
+1883-05-24|h|The Brooklyn Bridge opened
+1884-11-15|h|The Berlin Conference opened to divide Africa among European powers
+1886-10-28|h|The Statue of Liberty was dedicated in New York Harbor
+1893-09-19|h|New Zealand became the first country to give women the vote in national elections
+1898-02-15|h|USS Maine exploded in Havana Harbor
+1901-01-01|h|Australia's colonies federated as the Commonwealth of Australia
+1901-01-22|h|Queen Victoria died after reigning for 63 years
+1905-01-22|h|Bloody Sunday: troops fired on peaceful marchers in St Petersburg
+1906-04-18|h|The great San Francisco earthquake struck
+1910-05-31|h|The Union of South Africa was formed
+1911-10-10|h|The Wuchang Uprising began the revolution that ended imperial rule in China
+1911-12-14|h|Roald Amundsen's team became the first to reach the South Pole
+1912-01-01|h|The Republic of China was founded
+1912-01-17|h|Robert Falcon Scott's party reached the South Pole, 34 days after Amundsen
+1912-04-10|h|RMS Titanic left Southampton on her maiden voyage
+1912-04-15|h|The Titanic sank in the North Atlantic
+1914-06-28|h|Archduke Franz Ferdinand was assassinated in Sarajevo
+1914-07-28|h|Austria-Hungary declared war on Serbia, starting World War I
+1914-08-04|h|Britain declared war on Germany
+1914-08-15|h|The Panama Canal opened
+1914-12-25|h|The Christmas truce: soldiers on the Western Front met in no-man's-land
+1915-04-25|h|ANZAC troops landed at Gallipoli
+1915-05-07|h|A German U-boat sank the liner Lusitania
+1916-04-24|h|The Easter Rising began in Dublin
+1916-07-01|h|The Battle of the Somme began — Britain's bloodiest day of war
+1917-04-06|h|The United States entered World War I
+1917-11-07|h|The Bolsheviks seized power in Petrograd — on Russia's old calendar it was October 25
+1918-02-14|h|Russia switched to the Gregorian calendar — the day before was January 31
+1918-07-17|h|The Romanov family was executed in Yekaterinburg
+1918-11-11|h|The Armistice ended the fighting of World War I at 11 am
+1919-06-28|h|The Treaty of Versailles was signed
+1920-08-18|h|The 19th Amendment was ratified, giving American women the vote
+1922-11-04|h|Howard Carter's team found the first step down to Tutankhamun's tomb
+1922-11-26|h|Howard Carter first peered into Tutankhamun's tomb and saw "wonderful things"
+1929-10-29|h|The Wall Street Crash's worst day, when 16 million shares changed hands
+1930-03-12|h|Gandhi began the Salt March to the sea
+1933-01-30|h|Adolf Hitler was appointed Chancellor of Germany
+1933-12-05|h|Prohibition ended in the United States
+1934-10-16|h|The Chinese Red Army began the Long March
+1936-12-10|h|Edward VIII signed his abdication so he could marry Wallis Simpson
+1937-05-06|h|The airship Hindenburg burst into flames at Lakehurst, New Jersey
+1937-07-02|h|Amelia Earhart disappeared over the Pacific
+1938-09-30|h|The Munich Agreement was signed
+1939-09-01|h|Germany invaded Poland, starting World War II in Europe
+1939-09-03|h|Britain and France declared war on Germany
+1940-05-26|h|The Dunkirk evacuation began
+1940-07-10|h|The Battle of Britain began
+1941-06-22|h|Germany invaded the Soviet Union in Operation Barbarossa
+1941-12-07|h|Japan attacked Pearl Harbor
+1942-06-04|h|The Battle of Midway began
+1944-06-06|h|D-Day: Allied troops landed on the beaches of Normandy
+1944-08-25|h|Paris was liberated
+1945-05-08|h|VE Day: World War II ended in Europe
+1945-08-06|h|An atomic bomb destroyed Hiroshima
+1945-08-09|h|An atomic bomb destroyed Nagasaki
+1945-09-02|h|Japan formally surrendered aboard USS Missouri
+1945-10-24|h|The United Nations came into existence
+1947-08-14|h|Pakistan became independent
+1947-08-15|h|India became independent
+1948-01-30|h|Mahatma Gandhi was assassinated in New Delhi
+1948-05-14|h|The State of Israel was declared
+1948-06-24|h|The Soviet blockade of Berlin began, met by the Berlin Airlift
+1948-12-10|h|The UN adopted the Universal Declaration of Human Rights
+1949-04-04|h|NATO was founded
+1949-10-01|h|Mao Zedong proclaimed the People's Republic of China
+1950-06-25|h|The Korean War began
+1953-05-29|h|Edmund Hillary and Tenzing Norgay reached the summit of Everest
+1953-06-02|h|Elizabeth II was crowned at Westminster Abbey
+1953-07-27|h|The Korean War armistice was signed
+1955-12-01|h|Rosa Parks refused to give up her bus seat in Montgomery, Alabama
+1956-07-26|h|Egypt's President Nasser nationalized the Suez Canal
+1957-03-06|h|Ghana became the first sub-Saharan African colony to gain independence
+1957-03-25|h|The Treaty of Rome founded the European Economic Community
+1957-08-31|h|Malaya gained independence
+1959-01-01|h|Fulgencio Batista fled Cuba as Fidel Castro's revolution triumphed
+1960-10-01|h|Nigeria became independent
+1961-08-13|h|East Germany began building the Berlin Wall
+1962-07-05|h|Algeria became independent
+1962-10-16|h|The Cuban Missile Crisis began as Kennedy was shown spy-plane photos
+1963-08-28|h|Martin Luther King Jr. gave his "I Have a Dream" speech
+1963-11-22|h|President John F. Kennedy was assassinated in Dallas
+1963-12-12|h|Kenya became independent
+1964-07-02|h|The US Civil Rights Act was signed
+1965-03-07|h|Bloody Sunday: marchers for voting rights were attacked in Selma, Alabama
+1965-08-09|h|Singapore became an independent country
+1968-04-04|h|Martin Luther King Jr. was assassinated in Memphis
+1970-04-22|h|The first Earth Day
+1973-01-27|h|The Paris Peace Accords were signed to end the Vietnam War
+1974-08-09|h|Richard Nixon's resignation as President took effect
+1975-04-30|h|Saigon fell, ending the Vietnam War
+1979-05-04|h|Margaret Thatcher became Britain's first female Prime Minister
+1981-07-29|h|Prince Charles married Lady Diana Spencer
+1982-04-02|h|Argentina invaded the Falkland Islands
+1982-06-14|h|Argentine forces surrendered at Stanley, ending the Falklands War
+1984-12-03|h|The Bhopal gas leak in India, the world's worst industrial disaster
+1986-04-26|h|Reactor 4 at the Chernobyl nuclear plant exploded
+1989-06-04|h|The Tiananmen Square crackdown in Beijing
+1989-11-09|h|The Berlin Wall opened
+1990-02-11|h|Nelson Mandela walked free after 27 years in prison
+1990-10-03|h|Germany was reunified
+1991-12-25|h|Mikhail Gorbachev resigned as leader of the Soviet Union
+1991-12-26|h|The Soviet Union was formally dissolved
+1994-04-27|h|South Africa held its first election open to all races
+1994-05-06|h|The Channel Tunnel was officially opened
+1994-05-10|h|Nelson Mandela was inaugurated as President of South Africa
+1997-07-01|h|Hong Kong was handed from Britain to China
+1997-08-31|h|Diana, Princess of Wales, died in a car crash in Paris
+1999-01-01|h|The euro was launched as a currency for electronic payments
+2001-09-11|h|The September 11 attacks on New York and Washington
+2002-01-01|h|Euro banknotes and coins went into circulation
+2005-08-29|h|Hurricane Katrina made landfall in Louisiana
+2008-11-04|h|Barack Obama was elected the first Black US President
+2009-01-20|h|Barack Obama was inaugurated
+2013-12-05|h|Nelson Mandela died at 95
+2016-06-23|h|The United Kingdom voted to leave the European Union
+2020-01-31|h|The United Kingdom left the European Union
+2020-03-11|h|The World Health Organization declared COVID-19 a pandemic
+2022-02-24|h|Russia launched its full-scale invasion of Ukraine
+2022-09-08|h|Queen Elizabeth II died after 70 years on the throne
+2023-05-06|h|Charles III was crowned at Westminster Abbey
+
+## ---------------- science & invention ----------------
+1543-05-24J|s|Nicolaus Copernicus died — tradition says he saw his finished book on his deathbed
+1610-01-07|s|Galileo first saw Jupiter's moons through his telescope
+1610-03-13|s|Galileo published The Starry Messenger, his telescope discoveries
+1642-01-08|s|Galileo Galilei died under house arrest near Florence
+1687-07-05|s|Isaac Newton's Principia was published
+1727-03-20J|s|Isaac Newton died
+1774-08-01|s|Joseph Priestley isolated oxygen
+1781-03-13|s|William Herschel discovered Uranus, the first planet found with a telescope
+1783-06-04|s|The Montgolfier brothers gave the first public demonstration of a hot-air balloon
+1783-11-21|s|The first crewed hot-air balloon flight lifted off in Paris
+1796-05-14|s|Edward Jenner gave the first smallpox vaccination
+1800-03-20|s|Alessandro Volta described his battery, the first source of steady electric current
+1801-01-01|s|Giuseppe Piazzi discovered Ceres, the first known asteroid
+1804-02-21|s|Richard Trevithick's locomotive made the first railway journey by steam
+1831-08-29|s|Michael Faraday discovered electromagnetic induction
+1839-08-19|s|The daguerreotype photographic process was given to the world
+1844-05-24|s|Samuel Morse sent "What hath God wrought" by telegraph
+1846-09-23|s|Johann Galle found Neptune, right where mathematics predicted it
+1858-08-16|s|Queen Victoria sent the first transatlantic telegraph message
+1859-08-27|s|Edwin Drake struck oil in Titusville, Pennsylvania — the first commercial oil well
+1859-11-24|s|Charles Darwin's On the Origin of Species was published
+1866-07-27|s|The first lasting transatlantic telegraph cable was completed
+1869-03-06|s|Dmitri Mendeleev presented his periodic table of the elements
+1876-03-07|s|Alexander Graham Bell was granted the telephone patent
+1876-03-10|s|Bell made the first telephone call: "Mr. Watson, come here"
+1879-10-22|s|Thomas Edison's carbon-filament light bulb glowed for over 13 hours
+1883-08-27|s|Krakatoa's eruption — the loudest sound in recorded history
+1885-07-06|s|Louis Pasteur gave the first rabies vaccine to nine-year-old Joseph Meister
+1886-01-29|s|Karl Benz patented his Motorwagen, the first practical car
+1895-11-08|s|Wilhelm Röntgen discovered X-rays
+1898-12-26|s|Marie and Pierre Curie announced the discovery of radium
+1901-12-12|s|Guglielmo Marconi received the first transatlantic radio signal
+1903-12-17|s|The Wright brothers made the first powered airplane flight at Kitty Hawk
+1905-06-30|s|Einstein's paper on special relativity reached the journal Annalen der Physik
+1908-10-01|s|Ford introduced the Model T
+1909-07-25|s|Louis Blériot flew across the English Channel
+1912-01-06|s|Alfred Wegener first presented his theory of continental drift
+1913-12-01|s|Ford started the first moving assembly line for whole cars
+1915-11-25|s|Einstein presented the field equations of general relativity
+1919-06-15|s|Alcock and Brown landed in Ireland after the first nonstop transatlantic flight
+1926-01-26|s|John Logie Baird demonstrated television in London
+1928-09-28|s|Alexander Fleming noticed mold killing bacteria — the discovery of penicillin
+1939-08-27|s|The Heinkel He 178 made the first jet-powered flight
+1942-12-02|s|Chicago Pile-1 achieved the first self-sustaining nuclear chain reaction
+1945-07-16|s|The Trinity test: the first nuclear explosion, in New Mexico
+1947-10-14|s|Chuck Yeager broke the sound barrier in the Bell X-1
+1947-12-23|s|Bell Labs demonstrated the transistor
+1952-05-02|s|The de Havilland Comet began the first jet airliner service
+1953-02-28|s|Watson and Crick worked out the double-helix structure of DNA
+1953-04-25|s|Watson and Crick's DNA paper was published in Nature
+1958-09-12|s|Jack Kilby demonstrated the first integrated circuit
+1969-03-02|s|Concorde made its first flight
+1969-10-29|s|The first message crossed ARPANET, ancestor of the internet: "LO"
+1970-01-22|s|The Boeing 747 jumbo jet entered passenger service
+1971-11-15|s|Intel announced the 4004, the first commercial microprocessor
+1973-04-03|s|Martin Cooper made the first handheld mobile phone call
+1975-04-04|s|Microsoft was founded
+1976-01-21|s|Concorde began commercial supersonic flights
+1976-04-01|s|Apple was founded
+1980-05-18|s|Mount St. Helens erupted in Washington State
+1981-08-12|s|IBM introduced its Personal Computer
+1984-01-24|s|The Apple Macintosh went on sale
+1989-03-12|s|Tim Berners-Lee wrote the proposal that became the World Wide Web
+1991-08-06|s|The first website went public
+1993-04-30|s|CERN put the World Wide Web into the public domain
+1995-08-24|s|Windows 95 was released
+1996-02-10|s|IBM's Deep Blue beat Garry Kasparov in a chess game for the first time
+1996-07-05|s|Dolly the sheep, the first cloned mammal, was born
+1997-05-11|s|Deep Blue beat world champion Garry Kasparov in a full chess match
+1998-09-04|s|Google was incorporated
+2003-04-14|s|The Human Genome Project was declared complete
+2003-10-24|s|Concorde made its last commercial flight
+2004-02-04|s|Facebook launched at Harvard
+2004-12-26|s|The Indian Ocean earthquake and tsunami
+2005-04-23|s|The first YouTube video, "Me at the zoo", was uploaded
+2007-01-09|s|Steve Jobs unveiled the iPhone
+2007-06-29|s|The first iPhone went on sale
+2008-09-10|s|The Large Hadron Collider circulated its first beam
+2010-01-12|s|A devastating earthquake struck Haiti
+2011-03-11|s|The Tōhoku earthquake and tsunami struck Japan
+2012-07-04|s|CERN announced the discovery of the Higgs boson
+2015-09-14|s|LIGO detected gravitational waves for the first time
+2016-02-11|s|Scientists announced the first detection of gravitational waves
+2020-12-08|s|The first approved COVID-19 vaccine was given outside a trial, in Coventry, England
+2022-12-05|s|Fusion ignition: a lab reaction released more energy than the lasers put in
+1970-01-01|s|The Unix epoch — computers count time in seconds from this midnight
+2001-09-09|s|Unix time passed 1,000,000,000 seconds
+2009-02-13|s|Unix time read 1234567890
+2033-05-18|s|Unix time will pass 2,000,000,000 seconds
+2038-01-19|s|The "Year 2038 problem": 32-bit Unix clocks run out of seconds
+2000-01-01|s|The Y2K rollover, after years of fixing two-digit-year bugs
+2019-04-06|s|The GPS week counter rolled over, the second time since 1980
+2016-12-31|s|The most recent leap second was added to the world's clocks
+
+## ---------------- space ----------------
+1957-10-04|p|The Soviet Union launched Sputnik 1, the first artificial satellite
+1957-11-03|p|Laika the dog rode Sputnik 2 into orbit
+1958-01-31|p|Explorer 1, the first US satellite, was launched
+1958-07-29|p|NASA was created
+1961-04-12|p|Yuri Gagarin became the first human in space
+1961-05-05|p|Alan Shepard became the first American in space
+1962-02-20|p|John Glenn became the first American to orbit Earth
+1963-06-16|p|Valentina Tereshkova became the first woman in space
+1965-03-18|p|Alexei Leonov made the first spacewalk
+1966-02-03|p|Luna 9 made the first soft landing on the Moon
+1967-01-27|p|A fire during a test killed the three Apollo 1 astronauts
+1968-12-24|p|Apollo 8 orbited the Moon and photographed Earthrise
+1969-07-16|p|Apollo 11 launched from Kennedy Space Center
+1969-07-20|p|Apollo 11 landed on the Moon: "The Eagle has landed"
+1969-07-24|p|Apollo 11 splashed down safely in the Pacific
+1969-11-19|p|Apollo 12 landed on the Moon
+1970-04-13|p|An oxygen tank exploded on Apollo 13: "Houston, we've had a problem"
+1970-04-17|p|Apollo 13's crew splashed down safely
+1971-02-06|p|Alan Shepard hit golf balls on the Moon during Apollo 14
+1971-04-19|p|Salyut 1, the first space station, was launched
+1972-12-07|p|Apollo 17 launched; its crew soon took the "Blue Marble" photo
+1972-12-14|p|Apollo 17 left the Moon — the last time humans walked there
+1973-05-14|p|Skylab, America's first space station, was launched
+1975-07-17|p|An American Apollo and a Soviet Soyuz docked in orbit
+1976-07-20|p|Viking 1 made the first successful landing on Mars
+1977-08-20|p|Voyager 2 was launched
+1977-09-05|p|Voyager 1 was launched
+1979-03-05|p|Voyager 1 made its closest approach to Jupiter
+1980-11-12|p|Voyager 1 flew past Saturn
+1981-04-12|p|The first Space Shuttle, Columbia, launched — 20 years to the day after Gagarin
+1983-06-18|p|Sally Ride became the first American woman in space
+1984-02-07|p|Bruce McCandless made the first untethered spacewalk
+1986-01-24|p|Voyager 2 flew past Uranus
+1986-01-28|p|The Space Shuttle Challenger broke apart after launch
+1986-02-20|p|The core module of the Mir space station was launched
+1989-08-25|p|Voyager 2 flew past Neptune
+1990-02-14|p|Voyager 1 took the "Pale Blue Dot" photo of Earth
+1990-04-24|p|The Hubble Space Telescope was launched
+1997-07-04|p|Mars Pathfinder landed with the Sojourner rover
+1998-11-20|p|Zarya, the first module of the International Space Station, was launched
+2000-11-02|p|The first crew arrived on the International Space Station
+2003-02-01|p|The Space Shuttle Columbia broke apart during re-entry
+2003-10-15|p|Yang Liwei became China's first astronaut
+2004-01-04|p|NASA's Spirit rover landed on Mars
+2004-01-25|p|NASA's Opportunity rover landed on Mars
+2004-06-21|p|SpaceShipOne made the first privately funded human spaceflight
+2005-01-14|p|The Huygens probe landed on Saturn's moon Titan
+2005-07-04|p|Deep Impact slammed a probe into comet Tempel 1
+2008-05-25|p|NASA's Phoenix lander touched down near Mars's north pole
+2011-07-21|p|Atlantis landed, ending the Space Shuttle program
+2012-05-25|p|SpaceX's Dragon became the first commercial spacecraft to berth with the ISS
+2012-08-06|p|NASA's Curiosity rover landed on Mars
+2012-08-25|p|Voyager 1 crossed into interstellar space
+2014-11-12|p|The Philae lander touched down on comet 67P
+2015-07-14|p|New Horizons flew past Pluto
+2015-12-21|p|SpaceX landed a Falcon 9 rocket booster upright for the first time
+2017-09-15|p|Cassini ended its mission by diving into Saturn
+2018-02-06|p|Falcon Heavy launched a red Tesla Roadster toward Mars's orbit
+2019-01-01|p|New Horizons flew past Arrokoth, the most distant object ever explored
+2019-01-03|p|China's Chang'e 4 made the first landing on the far side of the Moon
+2020-05-30|p|SpaceX launched astronauts for the first time
+2021-02-18|p|NASA's Perseverance rover landed in Jezero Crater on Mars
+2021-04-19|p|The Ingenuity helicopter made the first powered flight on another planet
+2021-12-25|p|The James Webb Space Telescope was launched
+2022-07-12|p|NASA released the James Webb telescope's first full-color images
+2022-09-26|p|NASA's DART spacecraft crashed into an asteroid and changed its orbit
+2023-08-23|p|India's Chandrayaan-3 landed near the Moon's south pole
+2024-02-22|p|Odysseus made the first commercial landing on the Moon
+2024-10-13|p|SpaceX caught a returning Starship booster with the launch tower's arms
+
+## ---------------- sky ----------------
+1054-07-04J|k|Chinese astronomers recorded the supernova that created the Crab Nebula
+1572-11-11J|k|Tycho Brahe spotted a brilliant "new star" in Cassiopeia
+1604-10-09|k|Kepler's Supernova was first seen — the last one observed in our galaxy
+1639-11-24J|k|Jeremiah Horrocks made the first observation of a transit of Venus
+1759-03-13|k|Halley's Comet reached perihelion, proving Halley's prediction right
+1761-06-06|k|Astronomers around the world watched a transit of Venus
+1769-06-03|k|Captain Cook observed the transit of Venus from Tahiti
+1835-11-16|k|Halley's Comet reached perihelion, two weeks after Mark Twain was born
+1859-09-01|k|The Carrington Event, the most intense solar storm on record
+1874-12-09|k|A transit of Venus crossed the Sun
+1882-12-06|k|A transit of Venus crossed the Sun — the last for 122 years
+1908-06-30|k|The Tunguska explosion flattened 2,000 square km of Siberian forest
+1910-04-20|k|Halley's Comet reached perihelion
+1919-05-29|k|A total solar eclipse let Eddington confirm Einstein's bending of starlight
+1930-02-18|k|Clyde Tombaugh discovered Pluto
+1973-06-30|k|Concorde chased a total solar eclipse, giving scientists 74 minutes of totality
+1986-02-09|k|Halley's Comet reached its most recent perihelion
+1987-02-24|k|Supernova 1987A was seen, the closest in nearly 400 years
+1991-07-11|k|A total solar eclipse lasted almost 7 minutes over Hawaii and Mexico
+1994-07-16|k|Fragments of Comet Shoemaker–Levy 9 began smashing into Jupiter
+1997-04-01|k|Comet Hale-Bopp reached perihelion
+1999-08-11|k|A total solar eclipse crossed Europe from Cornwall to Romania
+2003-08-27|k|Mars came closer to Earth than at any time in about 60,000 years
+2004-06-08|k|The first transit of Venus seen by anyone alive
+2006-08-24|k|Pluto was reclassified as a dwarf planet
+2009-07-22|k|The longest total solar eclipse of the 21st century: 6 minutes 39 seconds
+2012-06-06|k|The last transit of Venus until 2117
+2013-02-15|k|A meteor exploded over Chelyabinsk, Russia, shattering windows
+2017-08-21|k|The Great American Eclipse crossed the United States coast to coast
+2019-04-10|k|Astronomers revealed the first image of a black hole
+2020-12-21|k|Jupiter and Saturn appeared closer together than at any time since 1623
+2024-04-08|k|A total solar eclipse crossed Mexico, the United States and Canada
+2026-08-12|k|A total solar eclipse will cross Greenland, Iceland and Spain
+2027-08-02|k|A total solar eclipse over North Africa will last up to 6 minutes 23 seconds
+2028-07-22|k|A total solar eclipse will pass over Sydney, Australia
+2029-04-13|k|Asteroid Apophis will pass closer to Earth than many satellites
+2032-11-13|k|Mercury will cross the face of the Sun
+2033-03-30|k|A total solar eclipse will darken Alaska
+2044-08-23|k|A total solar eclipse will cross Montana and western Canada
+2045-08-12|k|A total solar eclipse will cross the United States from California to Florida
+2061-07-28|k|Halley's Comet is predicted to return to perihelion
+2078-05-11|k|A total solar eclipse will cross the southern United States
+2079-05-01|k|A total solar eclipse will cross the northeastern United States and Canada
+2080-03-15|k|Jupiter and Saturn will again appear extremely close together
+2099-09-14|k|A total solar eclipse will cross North America
+2100-03-01|k|2100 is not a leap year, so this March 1 comes right after February 28
+2117-12-11|k|The next transit of Venus is predicted
+2125-12-08|k|A transit of Venus will cross the Sun again
+2186-07-16|k|The longest total solar eclipse in thousands of years: 7 minutes 29 seconds
+2287-08-28|k|Mars will come even closer to Earth than its 2003 record approach
+2400-02-29|k|A leap day in a century year — the first since 2000
+
+## ---------------- culture & sport ----------------
+1605-01-16|c|The first part of Don Quixote was published
+1616-04-22|c|Miguel de Cervantes died in Madrid
+1616-04-23J|c|William Shakespeare died — a different day from Cervantes despite the famous "same date"
+1719-04-25J|c|Robinson Crusoe was published
+1726-10-28J|c|Gulliver's Travels was published
+1755-04-15|c|Samuel Johnson's Dictionary of the English Language was published
+1791-12-05|c|Wolfgang Amadeus Mozart died in Vienna
+1813-01-28|c|Pride and Prejudice was published
+1818-01-01|c|Mary Shelley's Frankenstein was published
+1824-05-07|c|Beethoven's Ninth Symphony premiered in Vienna
+1827-03-26|c|Ludwig van Beethoven died in Vienna
+1843-12-19|c|Charles Dickens published A Christmas Carol
+1851-10-18|c|Moby-Dick was published in London
+1863-10-26|c|The Football Association was founded in London
+1872-11-30|c|Scotland and England played the first international football match
+1877-07-09|c|The first Wimbledon Championships began
+1886-05-08|c|Coca-Cola was first sold at a pharmacy in Atlanta
+1889-03-31|c|Gustave Eiffel climbed his newly finished tower to raise the French flag
+1890-07-29|c|Vincent van Gogh died
+1891-12-21|c|The first game of basketball was played in Springfield, Massachusetts
+1895-12-28|c|The Lumière brothers held the first public screening of films for a paying audience
+1896-04-06|c|The first modern Olympic Games opened in Athens
+1897-05-26|c|Bram Stoker's Dracula was published
+1903-10-01|c|The first World Series game was played
+1910-04-21|c|Mark Twain died, a day after Halley's Comet returned — just as he had predicted
+1913-05-29|c|Stravinsky's The Rite of Spring premiered in Paris and caused a near-riot
+1913-12-21|c|The first crossword puzzle appeared in the New York World
+1922-02-02|c|James Joyce's Ulysses was published on his 40th birthday
+1925-04-10|c|The Great Gatsby was published
+1927-09-30|c|Babe Ruth hit his record 60th home run of the season
+1927-10-06|c|The Jazz Singer premiered, the first feature film with synchronized dialogue
+1928-11-18|c|Mickey Mouse made his debut in Steamboat Willie
+1929-05-16|c|The first Academy Awards ceremony was held
+1930-07-13|c|The first FIFA World Cup matches were played in Uruguay
+1931-05-01|c|The Empire State Building opened
+1936-08-03|c|Jesse Owens won the 100 metres at the Berlin Olympics
+1936-11-02|c|The BBC began the world's first regular high-definition TV service
+1937-05-27|c|The Golden Gate Bridge opened to pedestrians
+1937-09-21|c|J.R.R. Tolkien's The Hobbit was published
+1937-12-21|c|Snow White and the Seven Dwarfs premiered, the first full-length cel-animated feature
+1938-04-18|c|Action Comics #1 introduced Superman
+1938-10-30|c|Orson Welles' War of the Worlds radio drama panicked some listeners
+1939-08-15|c|The Wizard of Oz premiered in Hollywood
+1939-12-15|c|Gone with the Wind premiered in Atlanta
+1941-05-01|c|Citizen Kane premiered
+1949-06-08|c|George Orwell's Nineteen Eighty-Four was published
+1951-07-16|c|The Catcher in the Rye was published
+1954-05-06|c|Roger Bannister ran the first mile under four minutes
+1954-07-05|c|Elvis Presley recorded "That's All Right", his first single
+1954-07-29|c|The Fellowship of the Ring was published
+1955-07-17|c|Disneyland opened in California
+1957-07-06|c|John Lennon met Paul McCartney at a church fête in Liverpool
+1960-07-11|c|To Kill a Mockingbird was published
+1962-10-05|c|The Beatles released "Love Me Do" — and Dr. No, the first Bond film, premiered
+1963-11-23|c|Doctor Who premiered on the BBC
+1964-02-09|c|The Beatles appeared on The Ed Sullivan Show, watched by 73 million Americans
+1964-02-25|c|Cassius Clay beat Sonny Liston to become heavyweight champion
+1966-07-30|c|England won the FIFA World Cup at Wembley
+1966-09-08|c|Star Trek premiered on American television
+1967-06-01|c|The Beatles released Sgt. Pepper's Lonely Hearts Club Band
+1968-10-18|c|Bob Beamon long-jumped 8.90 metres, smashing the world record
+1969-01-30|c|The Beatles played their final public performance on a London rooftop
+1969-08-15|c|The Woodstock festival began
+1969-09-26|c|The Beatles released Abbey Road
+1969-10-05|c|Monty Python's Flying Circus first aired
+1970-06-21|c|Brazil and Pelé won their third World Cup
+1971-03-08|c|Joe Frazier beat Muhammad Ali in the "Fight of the Century"
+1971-10-01|c|Walt Disney World opened in Florida
+1972-09-01|c|Bobby Fischer won the World Chess Championship
+1972-11-29|c|Atari released Pong
+1973-10-20|c|Queen Elizabeth II opened the Sydney Opera House
+1974-04-08|c|Hank Aaron hit his 715th home run, breaking Babe Ruth's record
+1974-10-30|c|Muhammad Ali beat George Foreman in the "Rumble in the Jungle"
+1975-06-20|c|Jaws opened in cinemas, creating the summer blockbuster
+1975-10-31|c|Queen released "Bohemian Rhapsody"
+1976-07-18|c|Nadia Comăneci scored the first perfect 10 in Olympic gymnastics
+1977-05-25|c|Star Wars was released
+1977-08-16|c|Elvis Presley died at Graceland
+1980-02-22|c|The US hockey team beat the Soviet Union in the "Miracle on Ice"
+1980-05-22|c|Pac-Man was released in Japan
+1980-12-08|c|John Lennon was shot dead in New York
+1981-08-01|c|MTV launched with "Video Killed the Radio Star"
+1982-06-11|c|E.T. the Extra-Terrestrial was released
+1982-11-30|c|Michael Jackson released Thriller, the best-selling album ever
+1985-07-03|c|Back to the Future was released
+1985-07-13|c|The Live Aid concerts were held in London and Philadelphia
+1985-09-13|c|Super Mario Bros. was released in Japan
+1986-06-22|c|Maradona scored both the "Hand of God" goal and the "Goal of the Century"
+1989-04-21|c|Nintendo released the Game Boy in Japan
+1989-12-17|c|The Simpsons premiered as a regular series
+1991-09-24|c|Nirvana released Nevermind
+1991-11-24|c|Freddie Mercury died
+1993-06-11|c|Jurassic Park was released
+1994-09-22|c|Friends premiered
+1994-12-03|c|Sony released the PlayStation in Japan
+1995-11-22|c|Toy Story, the first fully computer-animated feature, was released
+1997-04-13|c|Tiger Woods won his first Masters at 21
+1997-06-26|c|Harry Potter and the Philosopher's Stone was published
+1997-12-19|c|James Cameron's Titanic was released
+1999-03-31|c|The Matrix was released
+2001-12-19|c|The Lord of the Rings: The Fellowship of the Ring was released
+2007-07-21|c|The final Harry Potter book was released
+2008-08-08|c|The Beijing Olympics opened at 8:08 pm on 8/8/08
+2008-08-16|c|Usain Bolt won Olympic 100 m gold in a world-record 9.69 seconds
+2009-05-17|c|Minecraft was first released to the public
+2009-06-25|c|Michael Jackson died
+2009-08-16|c|Usain Bolt ran the 100 metres in 9.58 seconds, still the world record
+2009-12-18|c|Avatar was released
+2010-01-04|c|The Burj Khalifa, the world's tallest building, opened in Dubai
+2011-04-17|c|Game of Thrones premiered
+2012-07-27|c|The London Olympics opened
+2012-12-21|c|The end of a 5,126-year cycle of the Maya Long Count calendar
+2014-07-08|c|Germany beat Brazil 7–1 in the World Cup semi-final
+2016-01-10|c|David Bowie died two days after releasing his final album
+2016-11-02|c|The Chicago Cubs won the World Series, ending a 108-year drought
+2017-03-03|c|Nintendo released the Switch
+2022-12-18|c|Argentina won the World Cup final on penalties after a 3–3 draw
+
+## ---------------- born ----------------
+1412-01-06J|b|Traditional birthday of Joan of Arc
+1452-04-15J|b|Leonardo da Vinci was born near Vinci, Tuscany
+1473-02-19J|b|Nicolaus Copernicus was born
+1475-03-06J|b|Michelangelo was born
+1483-11-10J|b|Martin Luther was born
+1491-06-28J|b|Henry VIII was born
+1533-09-07J|b|Elizabeth I was born
+1561-01-22J|b|Francis Bacon was born
+1564-02-15J|b|Galileo Galilei was born in Pisa
+1564-04-26J|b|William Shakespeare was baptised in Stratford-upon-Avon
+1571-12-27J|b|Johannes Kepler was born
+1596-03-31|b|René Descartes was born
+1599-04-25J|b|Oliver Cromwell was born
+1599-06-06|b|Diego Velázquez was baptised in Seville
+1606-07-15|b|Rembrandt was born in Leiden
+1632-10-31|b|Johannes Vermeer was baptised in Delft
+1638-09-05|b|Louis XIV, the Sun King, was born
+1642-12-25J|b|Isaac Newton was born on Christmas Day (old calendar)
+1646-06-21J|b|Gottfried Leibniz, co-inventor of calculus, was born in Leipzig
+1685-02-23J|b|George Frideric Handel was born in Halle
+1685-03-21J|b|Johann Sebastian Bach was born in Eisenach
+1706-01-17|b|Benjamin Franklin was born in Boston (January 6, 1705 by the old calendar)
+1707-04-15|b|Leonhard Euler was born in Basel
+1729-05-02|b|Catherine the Great was born
+1732-02-22|b|George Washington was born (February 11 by the old calendar)
+1743-04-13|b|Thomas Jefferson was born (April 2 by the old calendar)
+1746-03-30|b|Francisco Goya was born
+1756-01-27|b|Wolfgang Amadeus Mozart was born in Salzburg
+1759-01-25|b|Robert Burns was born — now celebrated with Burns Night suppers
+1769-08-15|b|Napoleon Bonaparte was born in Corsica
+1770-12-17|b|Ludwig van Beethoven was baptised in Bonn
+1775-12-16|b|Jane Austen was born
+1777-04-30|b|Carl Friedrich Gauss was born
+1788-01-22|b|Lord Byron was born
+1791-09-22|b|Michael Faraday was born
+1795-10-31|b|John Keats was born
+1797-01-31|b|Franz Schubert was born
+1797-08-30|b|Mary Shelley was born
+1802-02-26|b|Victor Hugo was born
+1809-01-19|b|Edgar Allan Poe was born
+1809-02-12|b|Abraham Lincoln and Charles Darwin were both born on this day
+1812-02-07|b|Charles Dickens was born
+1813-05-22|b|Richard Wagner was born
+1815-12-10|b|Ada Lovelace, the first computer programmer, was born
+1817-07-12|b|Henry David Thoreau was born
+1818-05-05|b|Karl Marx was born
+1819-05-24|b|Queen Victoria was born
+1819-05-31|b|Walt Whitman was born
+1820-05-12|b|Florence Nightingale was born
+1821-11-11|b|Fyodor Dostoevsky was born
+1822-12-27|b|Louis Pasteur was born
+1828-02-08|b|Jules Verne was born
+1828-09-09|b|Leo Tolstoy was born
+1830-12-10|b|Emily Dickinson was born
+1831-06-13|b|James Clerk Maxwell was born
+1832-01-27|b|Lewis Carroll was born
+1834-07-19|b|Edgar Degas was born
+1835-11-30|b|Mark Twain was born, two weeks after Halley's Comet passed the Sun
+1839-01-19|b|Paul Cézanne was born
+1840-04-25J|b|Pyotr Ilyich Tchaikovsky was born
+1840-11-14|b|Claude Monet was born
+1847-02-11|b|Thomas Edison was born
+1853-03-30|b|Vincent van Gogh was born
+1854-10-16|b|Oscar Wilde was born
+1856-05-06|b|Sigmund Freud was born
+1856-07-10|b|Nikola Tesla was born
+1858-04-23|b|Max Planck, founder of quantum theory, was born
+1859-05-22|b|Arthur Conan Doyle, creator of Sherlock Holmes, was born
+1865-12-30|b|Rudyard Kipling was born
+1867-11-07|b|Marie Curie was born in Warsaw
+1869-10-02|b|Mahatma Gandhi was born
+1869-12-31|b|Henri Matisse was born
+1871-08-30|b|Ernest Rutherford was born
+1874-11-30|b|Winston Churchill was born
+1879-03-14|b|Albert Einstein was born — now also Pi Day
+1881-10-25|b|Pablo Picasso was born
+1882-01-25|b|Virginia Woolf was born
+1882-01-30|b|Franklin D. Roosevelt was born
+1882-02-02|b|James Joyce was born
+1885-10-07|b|Niels Bohr was born
+1887-08-12|b|Erwin Schrödinger was born
+1889-04-16|b|Charlie Chaplin was born
+1890-09-15|b|Agatha Christie was born
+1890-10-14|b|Dwight D. Eisenhower was born
+1892-01-03|b|J.R.R. Tolkien was born
+1898-11-29|b|C.S. Lewis was born
+1899-07-21|b|Ernest Hemingway was born
+1901-12-05|b|Walt Disney and Werner Heisenberg were both born on this day
+1903-06-25|b|George Orwell was born
+1904-03-02|b|Dr. Seuss was born
+1904-05-11|b|Salvador Dalí was born
+1906-12-09|b|Grace Hopper, computing pioneer, was born
+1907-07-06|b|Frida Kahlo was born
+1910-08-26|b|Mother Teresa was born
+1911-02-06|b|Ronald Reagan was born
+1912-06-23|b|Alan Turing was born
+1917-05-29|b|John F. Kennedy was born
+1918-05-11|b|Richard Feynman was born
+1918-07-18|b|Nelson Mandela was born
+1920-07-25|b|Rosalind Franklin, whose X-ray images revealed DNA's shape, was born
+1925-10-13|b|Margaret Thatcher was born
+1926-04-21|b|Queen Elizabeth II was born
+1926-06-01|b|Marilyn Monroe was born
+1928-08-06|b|Andy Warhol was born
+1929-01-15|b|Martin Luther King Jr. was born
+1929-06-12|b|Anne Frank was born
+1930-08-05|b|Neil Armstrong was born
+1934-03-09|b|Yuri Gagarin was born
+1934-11-09|b|Carl Sagan was born
+1935-01-08|b|Elvis Presley was born
+1937-03-06|b|Valentina Tereshkova was born
+1940-10-09|b|John Lennon was born
+1940-10-23|b|Pelé was born
+1942-01-08|b|Stephen Hawking was born, 300 years after Galileo died
+1942-01-17|b|Muhammad Ali was born
+1942-06-18|b|Paul McCartney was born
+1946-09-05|b|Freddie Mercury was born
+1947-01-08|b|David Bowie was born
+1951-05-26|b|Sally Ride was born
+1955-02-24|b|Steve Jobs was born
+1955-06-08|b|Tim Berners-Lee, inventor of the Web, was born
+1955-10-28|b|Bill Gates was born
+1958-08-29|b|Michael Jackson was born
+1960-10-30|b|Diego Maradona was born
+1961-08-04|b|Barack Obama was born
+1963-02-17|b|Michael Jordan was born
+1965-07-31|b|J.K. Rowling was born — the same birthday she gave Harry Potter
+1971-06-28|b|Elon Musk was born
+1975-12-30|b|Tiger Woods was born
+1981-09-04|b|Beyoncé was born
+1981-09-26|b|Serena Williams was born
+1985-02-05|b|Cristiano Ronaldo was born
+1986-08-21|b|Usain Bolt was born
+1987-06-24|b|Lionel Messi was born
+1989-12-13|b|Taylor Swift was born
+1997-07-12|b|Malala Yousafzai was born
+
+## ---------------- fiction ----------------
+1872-10-02|f|Phileas Fogg set off to go around the world in 80 days (Jules Verne)
+1872-12-21|f|Phileas Fogg arrived back at the Reform Club just in time (Around the World in Eighty Days)
+1891-05-04|f|Sherlock Holmes and Professor Moriarty grappled at the Reichenbach Falls
+1904-06-16|f|Bloomsday: Leopold Bloom's wander around Dublin in Joyce's Ulysses
+1955-11-05|f|Doc Brown slipped, hit his head and dreamed up the flux capacitor (Back to the Future)
+1955-11-12|f|Lightning struck Hill Valley's clock tower at 10:04 pm (Back to the Future)
+1885-09-07|f|The date on Doc Brown's tombstone in the Old West (Back to the Future Part III)
+1985-10-26|f|Marty McFly hit 88 mph and jumped back to 1955 (Back to the Future)
+2015-10-21|f|Marty and Doc arrived in the future, hoverboards and all (Back to the Future Part II)
+1984-04-04|f|Winston Smith began writing his forbidden diary (Nineteen Eighty-Four)
+1996-07-04|f|Humanity fought back against the alien invasion (Independence Day)
+1997-08-29|f|Judgment Day: Skynet launched its attack (Terminator 2)
+1979-09-19|f|Hermione Granger was born (Harry Potter)
+1980-07-30|f|Neville Longbottom was born (Harry Potter)
+1980-07-31|f|Harry Potter was born
+1981-10-31|f|Voldemort attacked the Potters at Godric's Hollow (Harry Potter)
+1991-09-01|f|Harry Potter took his first ride on the Hogwarts Express
+1998-05-02|f|The Battle of Hogwarts (Harry Potter)
+2063-04-05|f|First Contact: Zefram Cochrane's warp flight brought the Vulcans to Earth (Star Trek)
+2233-03-22|f|James T. Kirk was born in Iowa (Star Trek)
