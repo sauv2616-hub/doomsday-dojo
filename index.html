@@ -536,6 +536,7 @@ body.hero-on #scene{display:block}
 .hero-tag{margin:14px auto 0;max-width:300px;font-size:14.5px;line-height:1.5;letter-spacing:.06em;color:#d9d2c2;text-shadow:0 1px 3px rgba(0,0,0,.7)}
 .hero-bottom{margin-top:auto;width:100%;max-width:400px}
 .hero-play{font-size:26px;padding:22px 20px 19px}
+.hero-play.long{font-size:clamp(17px,5.6vw,24px);white-space:nowrap;padding-left:10px;padding-right:10px}
 .hero-meta{margin-top:12px;font-size:12.5px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:#bfb7a6;text-shadow:0 1px 3px rgba(0,0,0,.8)}
 .hero-meta i{font-style:normal;color:#6cb04f}
 .hero .link{color:#f2c14b;padding:10px;font-size:15px;text-shadow:0 1px 3px rgba(0,0,0,.8)}
@@ -868,7 +869,7 @@ function render(){
   $('#tabs').innerHTML=TABS.map(([k,l])=>`<button class="${k===on?'on':''}" data-tab="${k}">${ICON[k]}${l}</button>`).join('');
   $('#view').innerHTML=({daily:vDaily,train:vTrain,learn:vLearn,solve:vSolve})[tab]();
   if(tab==='solve'&&SV.revealed)renderSolveResult();
-  const g=today();showScene(tab==='daily'&&!(g&&g.done));
+  const g=today();showScene(tab==='daily'&&!(g&&g.done&&dailyView==='results'));
 }
 
 function vTrain(){
@@ -1369,7 +1370,7 @@ function gFinish(g,silent){
   while(g.res.length<NQ)g.res.push({v:-1,ok:false,ms:30000,pts:0});
   g.done=true;g.rev=null;g.score=Math.min(1000,g.res.reduce((a,r)=>a+r.pts,0));g.correct=g.res.filter(r=>r.ok).length;
   g.ms=g.res.reduce((a,r)=>a+r.ms,0);g.tiles=g.res.map(tileOf).join('');save();
-  if(!silent){fanfare(g.correct===NQ?5:g.correct===2?3:g.correct);G=null;$('#drill').hidden=true;$('#drill').innerHTML='';$('#drill').className='';document.body.classList.remove('in-drill');tab='daily';render();window.scrollTo(0,0);}
+  if(!silent){fanfare(g.correct===NQ?5:g.correct===2?3:g.correct);dailyView='results';G=null;$('#drill').hidden=true;$('#drill').innerHTML='';$('#drill').className='';document.body.classList.remove('in-drill');tab='daily';render();window.scrollTo(0,0);}
   sbSubmit(g.p,g);
 }
 // ✕ pauses: progress is saved and the Daily screen offers "Continue" (the question clock keeps running)
@@ -1397,25 +1398,26 @@ async function sbLoad(p){
 }
 
 /* --- daily view --- */
+let dailyView='home';                  // 'results' only right after finishing, or when the player taps See today's results
 function vDaily(){
   const p=puzzleNo(),g=today(),t=new Date();
   const head=`<div class="dhead"><div class="kick">Daily Three · #${p}</div><h1>Doomsday</h1><p>${WD[t.getDay()]}, ${MON[t.getMonth()]} ${t.getDate()}, ${t.getFullYear()}</p></div>`;
-  if(!g||!g.done){
-    const n=LB.rows?LB.rows.length:0;
+  if(!g||!g.done||dailyView!=='results'){
+    const n=LB.rows?LB.rows.length:0,fin=g&&g.done;
     return `<section class="hero"><div class="hero-top">
         <h1>Doomsday</h1>
         <p class="hero-sub">The Daily Three</p>
         <p class="hero-tag">3 dates · name the weekday · every date has a story</p></div>
       <div class="hero-bottom">
-        <button class="btn hero-play" data-act="g-play">${g?'Continue':'Play today’s three'}</button>
-        <div class="hero-meta">#${p} · ${g?`${g.res.length} of ${NQ} answered`:`${WDS[t.getDay()]}, ${MONS[t.getMonth()]} ${t.getDate()}`}${online()&&n?` · <i>●</i> ${n} played`:''}</div>
+        <button class="btn hero-play${fin?' long':''}" data-act="${fin?'g-results':'g-play'}">${fin?'See today’s results':g?'Continue':'Play today’s three'}</button>
+        <div class="hero-meta">#${p} · ${fin?`${g.score} pts · next in <span id="cd">${countdown()}</span>`:g?`${g.res.length} of ${NQ} answered`:`${WDS[t.getDay()]}, ${MONS[t.getMonth()]} ${t.getDate()}`}${online()&&n?` · <i>●</i> ${n} played`:''}</div>
         <button class="link" data-act="how">How to play</button></div></section>`;
   }
   const sc=(LB.rows||[]).filter(r=>r.client_id!==S.cid).map(r=>r.score),top=topPct(g.score,sc);
   const rankTxt=!online()?'Rankings not connected yet'
     :LB.rows===null?'Loading today’s players…'
     :!sc.length?'You’re the first player today!':`Top <em>${top}%</em> of today’s players`;
-  return `${head}
+  return `<button class="back" data-act="g-home">‹ Home</button>${head}
   <div class="tiles5">${g.tiles.split('').map(t=>`<div class="tile5 ${t}"></div>`).join('')}</div>
   <div class="big-score"><b>${g.score}</b><small>points out of 1000</small></div>
   <div class="meta3"><div><b>${g.correct}/${NQ}</b><small>correct</small></div><div><b>${sec(g.ms)}</b><small>total time</small></div><div><b>${LB.rows?sc.length+1:'–'}</b><small>players</small></div></div>
@@ -1479,7 +1481,7 @@ function toast(m){const d=document.createElement('div');d.className='toast';d.te
 document.addEventListener('click',e=>{
   const t=e.target;
   if(t.closest('[data-stop]')&&!t.closest('[data-act],[data-mode]'))return;
-  const tabB=t.closest('[data-tab]');if(tabB){tab=tabB.dataset.tab;render();window.scrollTo(0,0);return;}
+  const tabB=t.closest('[data-tab]');if(tabB){tab=tabB.dataset.tab;if(tab==='daily')dailyView='home';render();window.scrollTo(0,0);return;}
   const gv=t.closest('[data-gv]');if(gv){gAnswer(+gv.dataset.gv);return;}
   const v=t.closest('#pad [data-v]');if(v){answer(+v.dataset.v);return;}
   const k=t.closest('#pad [data-k]');if(k){keypad(k.dataset.k);return;}
@@ -1494,6 +1496,8 @@ document.addEventListener('click',e=>{
   else if(act==='next')advance();
   else if(act==='again'){const id=R.id,mode=R.mode;R=null;startDrill(id,mode);}
   else if(act==='g-play')gStart();
+  else if(act==='g-results'){dailyView='results';render();window.scrollTo(0,0);}
+  else if(act==='g-home'){dailyView='home';render();window.scrollTo(0,0);}
   else if(act==='g-quit')gQuit();
   else if(act==='how')openHow();
   else if(act==='how-close')closeSheet();
