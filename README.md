@@ -2,10 +2,14 @@
 
 A practice game for John Conway's **Doomsday method**: name the weekday of any date in your head.
 
-- **Daily Five** – five dates a day, the same for everyone; score points for accuracy and speed, see where you rank anonymously on today’s bell curve ("Top 25% of today’s players"), and share your result.
+- **Daily Three** – three special dates a day, the same for everyone: name each weekday, then get the story behind it (history, science, space, sky, culture, birthdays, fiction). Points for accuracy and speed, an anonymous “Top X% of today’s players” bell curve, and a shareable result.
 - **Train** – Practice solves plus an 11-step skill ladder (weekday numbers → 7 times table → mod 7 → leap years → month doomsdays → century anchors → year offset → year doomsday → full dates), with 20-question rounds, 60-second blitz, or endless mode. Live timer, instant feedback with the worked reasoning, and adaptive repetition of the items you miss.
 - **Guided walkthrough** – solve a date step by step, each step checked as you enter it.
 - **Practice solves** – enter any date and your answer; see every step (12s method and Odd+11), a diagnosis of your mistake, and the month calendar.
 - **Learn** – lessons, cheat sheet, and a year-by-doomsday table.
 
 Add to your home screen from Safari (Share → Add to Home Screen). Works offline; progress is stored on your device.
+
+## Date library
+
+Daily Three dates live in `data/facts.txt` (one `DATE|CATEGORY|FACT` per line; add `J` after dates recorded on the Julian calendar). Run `python3 build_facts.py` to validate, convert old-style dates, extend `data/schedule.txt` without moving existing puzzles, and regenerate `facts.js`.
