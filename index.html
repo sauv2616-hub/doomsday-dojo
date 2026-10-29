@@ -1289,56 +1289,73 @@ function today(){const p=puzzleNo();S.d3=S.d3||{};return S.d3[p];}
 function gBoot(){
   if(!S.cid){S.cid=(crypto.randomUUID?crypto.randomUUID():String(Math.random()).slice(2)+Date.now());save();}
   const g=today();
-  if(g&&!g.done)gFinish(g,true);           // app closed mid-game: score what was answered
+  if(g&&!g.done&&g.res.length>=NQ&&g.rev==null)gFinish(g,true);
   if(g&&g.done&&!g.submitted)sbSubmit(puzzleNo(),g);
   sbLoad(puzzleNo());
+  // app was closed mid-game: reopen right where the player left off
+  if(g&&!g.done)setTimeout(()=>gOpen(g),0);
 }
 let G=null;
+const QMAX=120000;                    // a question's clock keeps running while the app is closed, capped at 2 minutes
 function gStart(){
-  const p=puzzleNo();S.d3=S.d3||{};if(S.d3[p]&&S.d3[p].done)return;
-  const g={p,list:dailyList(p),res:[],done:false,submitted:false,started:Date.now()};
-  S.d3[p]=g;save();
-  G={g,i:0,locked:false};
+  const p=puzzleNo();S.d3=S.d3||{};
+  if(S.d3[p]&&S.d3[p].done)return;
+  if(!S.d3[p]){S.d3[p]={p,list:dailyList(p),res:[],done:false,submitted:false,started:Date.now()};save();}
+  gOpen(S.d3[p]);
+}
+function gOpen(g){
+  G={g,i:g.res.length,locked:false};
   showScene(false);
   document.body.classList.add('in-drill');
   const el=$('#drill');el.hidden=false;el.className='game';
-  el.innerHTML=`<header class="dtop"><button class="icon" data-act="g-quit" aria-label="Quit">${ICON.x}</button>
-    <div class="dtitle">Daily Three #${p}<small>${WD[new Date().getDay()]}, ${MON[new Date().getMonth()]} ${new Date().getDate()}</small></div>
+  el.innerHTML=`<header class="dtop"><button class="icon" data-act="g-quit" aria-label="Pause">${ICON.x}</button>
+    <div class="dtitle">Daily Three #${g.p}<small>${WD[new Date().getDay()]}, ${MON[new Date().getMonth()]} ${new Date().getDate()}</small></div>
     <div class="dprog num" id="gclock">0.0s</div></header>
     <div class="tiles5" id="gtiles"></div>
     <div class="dbody"><div class="gq"><div class="qsub" id="gverb"></div><div class="gdate" id="gdate"></div></div>
     <div class="gfb" id="gfb"></div></div>
     <div class="pad"><div class="g7">${range(7).map(i=>`<button class="gk w${i}" data-gv="${i}">${WDS[i]}${S.settings.nums?`<small>${i}</small>`:''}</button>`).join('')}</div></div>`;
-  gShow();requestAnimationFrame(gLoop);
+  if(g.rev!=null&&g.rev===g.res.length-1){        // closed while reading a fact: show that answer again
+    G.i=g.rev;gShow(true);G.locked=true;gReveal(g.list[G.i],g.res[G.i]);
+  }else if(G.i>=NQ){gFinish(g);return;}
+  else gShow(true);
+  requestAnimationFrame(gLoop);
 }
 function gTiles(g,cur){return range(NQ).map(i=>{const t=tileOf(g.res[i]);return `<div class="tile5 ${t||(i===cur?'cur':'')}">${t?'':i+1}</div>`;}).join('');}
-function gShow(){
-  const x=G.g.list[G.i];
-  $('#gtiles').innerHTML=gTiles(G.g,G.i);
+function gShow(resume){
+  const g=G.g,x=g.list[G.i];
+  $('#gtiles').innerHTML=gTiles(g,G.i);
   $('#gverb').textContent=verb(x.Y,x.m,x.d);
   $('#gdate').outerHTML=`<div class="gdate" id="gdate">${dstr(x)}</div>`;
   $('#gfb').className='gfb';$('#gfb').innerHTML='';
   $('#drill .dbody').scrollTop=0;
   document.querySelectorAll('[data-gv]').forEach(b=>b.className=b.className.replace(/ (right|wrong)/g,''));
-  G.locked=false;G.reveal=false;G.t0=performance.now();
+  // keep the original start time when resuming the same question, so closing the app never resets the clock
+  if(!(resume&&g.qi===G.i&&g.qStart)){g.qi=G.i;g.qStart=Date.now();save();}
+  G.locked=false;G.reveal=false;
 }
+const qElapsed=()=>Math.min(QMAX,Math.max(0,Date.now()-G.g.qStart));
 function gLoop(){
   if(!G)return;
-  const done=G.g.res.reduce((a,r)=>a+r.ms,0),cur=G.locked?0:performance.now()-G.t0;
+  const done=G.g.res.reduce((a,r)=>a+r.ms,0),cur=G.locked?0:qElapsed();
   const c=$('#gclock');if(c)c.textContent=((done+cur)/1000).toFixed(1)+'s';
   requestAnimationFrame(gLoop);
 }
 function gAnswer(v){
   if(!G||G.locked)return;
   G.locked=true;
-  const x=G.g.list[G.i],ans=solve(x.Y,x.m,x.d).wd,ms=performance.now()-G.t0,ok=v===ans,close=!ok&&(mod7(v-ans)===1||mod7(ans-v)===1);
-  const pts=ok?qPts(true,ms):close?CLOSE_PTS:0;
-  G.g.res.push({v,ok,close,ms:Math.round(ms),pts});save();
-  document.querySelectorAll('[data-gv]').forEach(b=>{const n=+b.dataset.gv;if(n===ans)b.className+=' right';else if(n===v)b.className+=' wrong';});
-  $('#gtiles').innerHTML=gTiles(G.g,-1);
+  const x=G.g.list[G.i],ans=solve(x.Y,x.m,x.d).wd,ms=qElapsed(),ok=v===ans,close=!ok&&(mod7(v-ans)===1||mod7(ans-v)===1);
+  const pts=ok?qPts(true,ms):close?CLOSE_PTS:0,r={v,ok,close,ms:Math.round(ms),pts};
+  G.g.res.push(r);G.g.rev=G.i;save();
   let run=0;for(let k=G.g.res.length-1;k>=0&&G.g.res[k].ok;k--)run++;
   beep(ok?true:close?'close':false,run);
-  // the trivia is the reward: show it and wait for a tap (the clock is already stopped)
+  gReveal(x,r);
+}
+// the trivia is the reward: show it and wait for a tap (the clock is already stopped)
+function gReveal(x,r){
+  const ans=solve(x.Y,x.m,x.d).wd,{v,ok,close,ms,pts}=r;
+  document.querySelectorAll('[data-gv]').forEach(b=>{const n=+b.dataset.gv;if(n===ans)b.className+=' right';else if(n===v)b.className+=' wrong';});
+  $('#gtiles').innerHTML=gTiles(G.g,-1);
   const fb=$('#gfb');fb.className='gfb '+(ok?'ok':close?'close':'bad');
   fb.innerHTML=`<div class="vline">${ok?`✓ ${WD[ans]} · +${pts}`:close?`≈ So close! It ${isPast(x)?'was':'will be'} a ${WD[ans]} · +${pts}`:`✗ It ${isPast(x)?'was':'will be'} a ${WD[ans]}`}<small>${sec(ms)}</small></div>
     ${ok?'':shortcutTab(x)}
@@ -1347,15 +1364,16 @@ function gAnswer(v){
   G.reveal=true;
   setTimeout(()=>{const f=$('#gfb .fact');f&&f.scrollIntoView({block:'nearest',behavior:'smooth'});},60);
 }
-function gNext(){if(!G||!G.reveal)return;G.i++;if(G.i>=NQ)gFinish(G.g);else gShow();}
+function gNext(){if(!G||!G.reveal)return;G.g.rev=null;save();G.i++;if(G.i>=NQ)gFinish(G.g);else gShow();}
 function gFinish(g,silent){
   while(g.res.length<NQ)g.res.push({v:-1,ok:false,ms:30000,pts:0});
-  g.done=true;g.score=Math.min(1000,g.res.reduce((a,r)=>a+r.pts,0));g.correct=g.res.filter(r=>r.ok).length;
+  g.done=true;g.rev=null;g.score=Math.min(1000,g.res.reduce((a,r)=>a+r.pts,0));g.correct=g.res.filter(r=>r.ok).length;
   g.ms=g.res.reduce((a,r)=>a+r.ms,0);g.tiles=g.res.map(tileOf).join('');save();
   if(!silent){fanfare(g.correct===NQ?5:g.correct===2?3:g.correct);G=null;$('#drill').hidden=true;$('#drill').innerHTML='';$('#drill').className='';document.body.classList.remove('in-drill');tab='daily';render();window.scrollTo(0,0);}
   sbSubmit(g.p,g);
 }
-function gQuit(){if(!G)return;const g=G.g;G=null;gFinish(g);}
+// ✕ pauses: progress is saved and the Daily screen offers "Continue" (the question clock keeps running)
+function gQuit(){if(!G)return;G=null;$('#drill').hidden=true;$('#drill').innerHTML='';$('#drill').className='';document.body.classList.remove('in-drill');tab='daily';render();window.scrollTo(0,0);}
 
 /* --- shared scores (Supabase REST) --- */
 function sbHeaders(){const h={apikey:SB.key,'Content-Type':'application/json'};if(SB.key.startsWith('eyJ'))h.Authorization='Bearer '+SB.key;return h;}
@@ -1389,8 +1407,8 @@ function vDaily(){
         <p class="hero-sub">The Daily Three</p>
         <p class="hero-tag">3 dates · name the weekday · every date has a story</p></div>
       <div class="hero-bottom">
-        <button class="btn hero-play" data-act="g-play">Play today’s three</button>
-        <div class="hero-meta">#${p} · ${WDS[t.getDay()]}, ${MONS[t.getMonth()]} ${t.getDate()}${online()&&n?` · <i>●</i> ${n} played`:''}</div>
+        <button class="btn hero-play" data-act="g-play">${g?'Continue':'Play today’s three'}</button>
+        <div class="hero-meta">#${p} · ${g?`${g.res.length} of ${NQ} answered`:`${WDS[t.getDay()]}, ${MONS[t.getMonth()]} ${t.getDate()}`}${online()&&n?` · <i>●</i> ${n} played`:''}</div>
         <button class="link" data-act="how">How to play</button></div></section>`;
   }
   const sc=(LB.rows||[]).filter(r=>r.client_id!==S.cid).map(r=>r.score),top=topPct(g.score,sc);
