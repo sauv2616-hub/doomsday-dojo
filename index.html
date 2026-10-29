@@ -4,29 +4,40 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Doomsday Dojo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,900&display=swap" rel="stylesheet">
 <meta name="description" content="Train the Doomsday method: name the weekday of any date in your head.">
-<meta name="theme-color" content="#0d0f13">
+<meta name="theme-color" content="#f7f3ea" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f1115" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Doomsday">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="manifest" href="manifest.webmanifest">
 <style>
 :root{
-  --bg:#0d0f13;--bg2:#12151b;--card:#171b22;--card2:#1f242d;--line:#2a303b;
-  --text:#eef1f5;--muted:#98a1b0;--faint:#5f6878;
-  --accent:#f5b544;--accent2:#ff8a3d;--ink:#1a1305;--good:#3fd394;--bad:#ff6b63;
-  --w0:#ff6f6b;--w1:#ffa24c;--w2:#f2d14b;--w3:#5fd68a;--w4:#45c9d3;--w5:#7096ff;--w6:#b685ff;
-  --r:18px;
+  --bg:#f7f3ea;--bg2:#efe9dc;--card:#fffdf8;--card2:#f2ece0;--line:#e3dac8;
+  --text:#1d1b16;--muted:#6b6457;--faint:#a0978a;
+  --accent:#e8590c;--accent2:#f08c00;--ink:#fff;--good:#2b9a48;--bad:#d9363e;--warn:#d99a00;
+  --w0:#e03131;--w1:#e8590c;--w2:#c48f00;--w3:#2f9e44;--w4:#0c8599;--w5:#3b5bdb;--w6:#8441d6;
+  --r:18px;--shadow:0 1px 0 rgba(0,0,0,.04),0 6px 18px -10px rgba(60,40,10,.25);
   --font:ui-rounded,"SF Pro Rounded",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-  color-scheme:dark;
+  --display:"Fraunces",Georgia,"Times New Roman",serif;
+  color-scheme:light;
 }
+@media (prefers-color-scheme: dark){:root{
+  --bg:#0f1115;--bg2:#14171d;--card:#191d24;--card2:#20252e;--line:#2c323d;
+  --text:#eef1f5;--muted:#9aa3b2;--faint:#606a7a;
+  --accent:#ff8a3d;--accent2:#f5b544;--ink:#1a1006;--good:#3fcf8e;--bad:#ff6b63;--warn:#f5b544;
+  --w0:#ff6f6b;--w1:#ffa24c;--w2:#f2d14b;--w3:#5fd68a;--w4:#45c9d3;--w5:#7096ff;--w6:#b685ff;
+  --shadow:none;color-scheme:dark;
+}}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font)}
 body{min-height:100dvh;overscroll-behavior:none;touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-text-size-adjust:100%;
-  background:radial-gradient(900px 420px at 50% -180px,rgba(245,181,68,.13),transparent 65%),var(--bg);background-attachment:fixed}
+  background:var(--bg)}
 button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;padding:0}
 b,strong{font-weight:750}
 .num,.qask,.tile b,.kdisp{font-variant-numeric:tabular-nums}
@@ -35,14 +46,14 @@ b,strong{font-weight:750}
 body.in-drill #view,body.in-drill .tabs{display:none}
 
 .top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin:8px 0 18px}
-h1{font-size:30px;letter-spacing:-.025em;margin:0;line-height:1.1;font-weight:800}
+h1{font-family:var(--display);font-size:32px;letter-spacing:-.01em;margin:0;line-height:1.1;font-weight:900}
 h1 span{color:var(--accent)}
 .top p{margin:4px 0 0;color:var(--muted);font-size:14.5px;line-height:1.4}
-h2{font-size:24px;margin:2px 0 0;letter-spacing:-.02em}
+h2{font-family:var(--display);font-size:26px;margin:2px 0 0;font-weight:900}
 h3{font-size:17px;margin:0 0 10px;letter-spacing:-.01em}
 .gh{font-size:12.5px;text-transform:uppercase;letter-spacing:.12em;color:var(--faint);font-weight:800;margin:24px 4px 8px}
 
-.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:12px;box-shadow:var(--shadow)}
 .pill{display:inline-flex;align-items:center;gap:6px;padding:7px 11px;border-radius:99px;background:var(--card2);border:1px solid var(--line);font-size:13px;font-weight:700;white-space:nowrap}
 .pill svg{width:15px;height:15px}
 .flame{color:var(--accent2)}
@@ -56,9 +67,9 @@ h3{font-size:17px;margin:0 0 10px;letter-spacing:-.01em}
 .row>*{flex:1}
 
 .btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:15px 18px;border-radius:15px;font-weight:800;font-size:17px;
-  background:linear-gradient(180deg,#ffc860,#f2a12e);color:var(--ink);box-shadow:0 6px 20px -8px rgba(245,170,60,.6)}
-.btn:active{transform:scale(.98)}
-.btn.ghost{background:var(--card2);color:var(--text);border:1px solid var(--line);box-shadow:none}
+  background:var(--accent);color:var(--ink);border-bottom:4px solid color-mix(in srgb,var(--accent) 65%,#000)}
+.btn:active{transform:translateY(2px);border-bottom-width:2px}
+.btn.ghost{background:var(--card);color:var(--text);border:1px solid var(--line);border-bottom:3px solid var(--line)}
 .btn.sm{padding:10px 12px;font-size:15px;border-radius:12px}
 
 /* today */
@@ -79,7 +90,7 @@ h3{font-size:17px;margin:0 0 10px;letter-spacing:-.01em}
 .done-badge{color:var(--good);font-weight:800;font-size:14px}
 
 .drow{display:grid;grid-template-columns:38px 1fr auto;align-items:center;gap:12px;width:100%;text-align:left;
-  background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px;margin-bottom:8px}
+  background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px;margin-bottom:8px;box-shadow:var(--shadow)}
 .drow:active{background:var(--card2)}
 .dn{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:var(--card2);color:var(--muted);font-weight:800;font-size:15px}
 .drow.m3 .dn{background:color-mix(in srgb,var(--accent) 22%,var(--card2));color:var(--accent)}
@@ -87,14 +98,14 @@ h3{font-size:17px;margin:0 0 10px;letter-spacing:-.01em}
 .dt small{display:block;color:var(--muted);font-size:13px;margin-top:2px}
 .dr{text-align:right}
 .dr small{display:block;color:var(--faint);font-size:12px;margin-top:3px}
-.stars b{color:#3a414e;font-size:14px;letter-spacing:1px}
+.stars b{color:var(--line);font-size:14px;letter-spacing:1px}
 .stars b.on{color:var(--accent)}
 
 /* tabs */
 .tabs{position:fixed;left:0;right:0;bottom:0;z-index:5;display:flex;justify-content:center;
-  background:rgba(13,15,19,.82);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-top:1px solid var(--line);
+  background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-top:1px solid var(--line);
   padding:6px 8px calc(env(safe-area-inset-bottom) + 6px)}
-.tabs .in{display:grid;grid-template-columns:repeat(4,1fr);width:100%;max-width:560px}
+.tabs .in{display:grid;grid-template-columns:repeat(3,1fr);width:100%;max-width:560px}
 .tabs button{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;color:var(--faint);font-size:11.5px;font-weight:700}
 .tabs svg{width:24px;height:24px}
 .tabs button.on{color:var(--accent)}
@@ -140,13 +151,13 @@ h3{font-size:17px;margin:0 0 10px;letter-spacing:-.01em}
   min-height:130px;border-radius:var(--r);margin-top:10px;transition:box-shadow .2s}
 .qcard.g{justify-content:flex-start;flex:none;margin-top:0}
 .qcard.g .qsub{display:none}
-.qcard.g .qask{position:sticky;top:0;z-index:1;width:100%;background:var(--bg);font-size:30px;padding:4px 0 2px;margin:0}
+.qcard.g .qask{position:sticky;top:0;z-index:1;width:100%;background:var(--bg);font-family:var(--font);font-size:30px;padding:4px 0 2px;margin:0}
 #drill.gm .hud{display:none}
 #drill.gm .tbar{margin-top:8px}
 .ws li.todo{display:none}
 .qcard.ok{box-shadow:0 0 0 2px color-mix(in srgb,var(--good) 55%,transparent) inset}
 .qcard.bad{box-shadow:0 0 0 2px color-mix(in srgb,var(--bad) 55%,transparent) inset;animation:shake .32s}
-.qask{font-size:48px;font-weight:850;letter-spacing:-.025em;margin-top:6px;animation:pop .22s ease-out}
+.qask{font-family:var(--display);font-size:46px;font-weight:900;letter-spacing:-.025em;margin-top:6px;animation:pop .22s ease-out}
 .qask.long{font-size:38px}
 .qask .mod{font-size:.55em;color:var(--muted);font-weight:700}
 .qsub .chip{text-transform:none;letter-spacing:0;font-size:14px}
@@ -174,7 +185,7 @@ h3{font-size:17px;margin:0 0 10px;letter-spacing:-.01em}
 .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .k{height:64px;border-radius:14px;background:var(--card2);border:1px solid var(--line);font-size:25px;font-weight:800;transition:transform .06s}
-.k:active{transform:scale(.94);background:#2a303b}
+.k:active{transform:scale(.94);background:color-mix(in srgb,var(--text) 8%,var(--card2))}
 .g3 .k{height:54px;font-size:23px}
 .g2 .k{height:76px;font-size:19px}
 .wk{font-size:15px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;border-top:3px solid var(--c)}
@@ -221,6 +232,7 @@ select,input{font:inherit;font-size:17px;font-weight:700;color:var(--text);backg
 select{appearance:none;-webkit-appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);
   background-position:calc(100% - 17px) 52%,calc(100% - 12px) 52%;background-size:5px 5px;background-repeat:no-repeat}
 input:focus,select:focus{outline:none;border-color:var(--accent)}
+input::placeholder{color:var(--faint);font-weight:600}
 .guess{margin:10px 0 12px}
 .guess .k{height:54px}
 .guess .k.sel{background:color-mix(in srgb,var(--c) 28%,var(--card2));border-color:var(--c)}
@@ -249,7 +261,7 @@ input:focus,select:focus{outline:none;border-color:var(--accent)}
 .lesson summary .dn{flex:none}
 .lesson summary::after{content:"";margin-left:auto;width:8px;height:8px;border-right:2px solid var(--faint);border-bottom:2px solid var(--faint);transform:rotate(45deg);transition:transform .2s}
 .lesson[open] summary::after{transform:rotate(225deg)}
-.lesson .lb{padding:0 16px 16px;color:#c9cfd9;font-size:15.5px;line-height:1.6;-webkit-user-select:text;user-select:text}
+.lesson .lb{padding:0 16px 16px;color:var(--text);font-size:15.5px;line-height:1.6;-webkit-user-select:text;user-select:text}
 .lesson .lb p{margin:8px 0}
 .lesson .lb b{color:var(--text)}
 .lesson .lb .btn{margin-top:12px}
@@ -260,7 +272,7 @@ table.t th{color:var(--faint);font-size:12px;text-transform:uppercase;letter-spa
 .mgrid div{background:var(--card2);border-radius:12px;padding:8px 4px;text-align:center}
 .mgrid b{display:block;font-size:19px;color:var(--accent)}
 .mgrid small{color:var(--faint);font-size:12px;font-weight:700}
-.cheat{background:linear-gradient(150deg,#1d1a13,#171b22 70%);border-color:#3a3222}
+.cheat{background:var(--card2)}
 .cheat .cg{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:14.5px;align-items:baseline}
 .cheat .cg span:nth-child(odd){color:var(--faint);font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:.06em}
 .ex{background:var(--bg2);border-radius:12px;padding:10px 12px;margin:8px 0;font-size:14.5px}
@@ -292,6 +304,70 @@ table.t th{color:var(--faint);font-size:12px;text-transform:uppercase;letter-spa
 .tg.on::after{transform:translateX(20px);background:var(--accent)}
 .danger{color:var(--bad);font-weight:750;font-size:15px;padding:12px 0 2px}
 .empty{color:var(--faint);font-size:14px;padding:6px 0}
+/* daily game */
+.dhead{text-align:center;margin:10px 0 18px}
+.dhead .kick{font-size:12.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
+.dhead h1{font-size:40px;margin:2px 0}
+.dhead p{margin:0;color:var(--muted);font-size:15px}
+.tiles5{display:flex;justify-content:center;gap:8px;margin:14px 0}
+.tile5{width:54px;height:54px;border-radius:12px;border:2px solid var(--line);background:var(--card);display:grid;place-items:center;font-family:var(--display);font-weight:900;font-size:22px;color:var(--faint)}
+.tile5.cur{border-color:var(--text);color:var(--text);animation:pulse 1.2s ease-in-out infinite}
+.tile5.G{background:var(--good);border-color:var(--good);color:#fff;animation:flip .4s}
+.tile5.Y{background:var(--warn);border-color:var(--warn);color:#fff;animation:flip .4s}
+.tile5.R{background:var(--bad);border-color:var(--bad);color:#fff;animation:flip .4s}
+@keyframes flip{0%{transform:rotateX(90deg)}100%{transform:none}}
+@keyframes pulse{50%{transform:scale(1.06)}}
+.rules{display:grid;gap:10px;margin:6px 0 16px}
+.rules div{display:flex;gap:12px;align-items:center;font-size:15px;line-height:1.35}
+.rules b.n{flex:none;width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:var(--card2);color:var(--accent);font-family:var(--display)}
+.namein{display:flex;gap:8px;align-items:center;margin-bottom:12px}
+.namein label{font-size:13px;font-weight:800;color:var(--muted);white-space:nowrap}
+.big-score{text-align:center;margin:4px 0 2px}
+.big-score b{display:block;font-family:var(--display);font-size:64px;line-height:1;font-weight:900;letter-spacing:-.02em}
+.big-score small{color:var(--muted);font-weight:700;font-size:14px}
+.meta3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0 4px;text-align:center}
+.meta3 div{background:var(--card2);border-radius:12px;padding:8px}
+.meta3 b{display:block;font-size:19px}
+.meta3 small{font-size:11px;color:var(--faint);font-weight:800;text-transform:uppercase;letter-spacing:.06em}
+.rank{text-align:center;font-weight:800;font-size:18px;margin:4px 0 2px}
+.rank em{font-style:normal;color:var(--accent)}
+.curve{width:100%;height:auto;display:block;margin-top:6px}
+.lb{width:100%;border-collapse:collapse;font-size:14.5px}
+.lb td{padding:8px 4px;border-top:1px solid var(--line)}
+.lb tr:first-child td{border-top:0}
+.lb td.r{color:var(--faint);font-weight:800;width:28px}
+.lb td.s{text-align:right;font-weight:800}
+.lb td.t{text-align:right;color:var(--muted);width:62px}
+.lb tr.me td{color:var(--accent);font-weight:800}
+.mini{display:inline-flex;gap:2px;vertical-align:middle}
+.mini i{width:9px;height:9px;border-radius:2px;background:var(--line)}
+.mini i.G{background:var(--good)}.mini i.Y{background:var(--warn)}.mini i.R{background:var(--bad)}
+.rev{border-top:1px solid var(--line);padding:10px 0}
+.rev:first-of-type{border-top:0}
+.rev summary{list-style:none;display:flex;align-items:center;gap:10px;cursor:pointer;font-weight:750}
+.rev summary::-webkit-details-marker{display:none}
+.rev summary .pts{margin-left:auto;font-weight:800;color:var(--muted);font-size:14px}
+.rev .why{margin-left:30px}
+.cd{text-align:center;color:var(--muted);font-size:14px;margin:18px 0 6px}
+.cd b{display:block;font-family:var(--display);font-size:28px;color:var(--text);font-variant-numeric:tabular-nums}
+.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 90px);transform:translateX(-50%);background:var(--text);color:var(--bg);padding:10px 16px;border-radius:12px;font-weight:800;z-index:50;animation:fade .2s}
+#drill.game .gdate{font-family:var(--display);font-size:44px;font-weight:900;letter-spacing:-.01em;animation:pop .22s ease-out}
+#drill.game .gq{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+#drill.game .gfb{min-height:64px;text-align:center;font-weight:800;font-size:18px}
+#drill.game .gfb.ok{color:var(--good)}#drill.game .gfb.bad{color:var(--bad)}
+#drill.game .gfb small{display:block;color:var(--muted);font-size:14px;font-weight:700;margin-top:2px}
+.gk{height:74px;border-radius:14px;font-weight:850;font-size:15px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  background:color-mix(in srgb,var(--c) 12%,var(--card));color:var(--c);border:2px solid color-mix(in srgb,var(--c) 35%,transparent);border-bottom-width:5px;transition:transform .05s}
+.gk:active{transform:translateY(3px);border-bottom-width:2px}
+.gk.right{background:var(--good);border-color:var(--good);color:#fff}
+.gk.wrong{background:var(--bad);border-color:var(--bad);color:#fff}
+.gk small{font-size:11px;opacity:.7}
+.prac{display:flex;align-items:center;gap:14px;width:100%;text-align:left}
+.prac .ic{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:color-mix(in srgb,var(--accent) 14%,var(--card));color:var(--accent);flex:none}
+.prac .ic svg{width:24px;height:24px}
+.prac b{display:block;font-size:17px}
+.prac small{color:var(--muted);font-size:13.5px}
+.back{display:inline-flex;align-items:center;gap:6px;color:var(--accent);font-weight:800;font-size:15px;padding:6px 0;margin-top:4px}
 .foot{color:var(--faint);font-size:12.5px;text-align:center;margin:20px 0 4px;line-height:1.5}
 </style>
 </head>
@@ -366,7 +442,7 @@ function randDate(m){const Y=ri(rangeLo(),rangeHi());m=m||ri(1,12);return {Y,m,d
 /* ---------- storage ---------- */
 const KEY='ddojo.v1';
 function defaults(){return {items:{},recent:{},rounds:[],months:{},best:{},daily:{},modes:{},
-  days:{last:null,count:0,total:0},totals:{n:0,c:0,ms:0},
+  days:{last:null,count:0,total:0},totals:{n:0,c:0,ms:0},games:{},
   settings:{range:'1900-2099',sound:true,auto:true,nums:true}};}
 let S=load();
 function load(){
@@ -430,7 +506,7 @@ function whyFull(s){
   <div><i>3</i><span>${monthLine(s)}</span></div></div>`;
 }
 function verb(Y,m,d){const t=new Date(),k=Y*10000+m*100+d,n=t.getFullYear()*10000+(t.getMonth()+1)*100+t.getDate();return k<n?'What day was':k>n?'What day will be':'What day is';}
-function fullQ(Y,m,d){const s=solve(Y,m,d);return {key:'m'+m,type:'weekday',sub:verb(Y,m,d),ask:`${MONS[m-1]} ${d}, ${Y}`,long:true,ans:s.wd,why:whyFull(s),month:m};}
+function fullQ(Y,m,d){const s=solve(Y,m,d);return {key:'m'+m,type:'weekday',sub:verb(Y,m,d),ask:`${MONS[m-1]} ${d}, ${Y}`,ctx:`${MONS[m-1]} ${d}, ${Y}`,long:true,ans:s.wd,why:whyFull(s),month:m};}
 
 /* ---------- drills ---------- */
 const DR={};
@@ -523,7 +599,7 @@ def({id:'step',title:'From doomsday to date',sub:'Given the year’s doomsday',t
   gen(){
     const m=parseInt(pickKey('step',range(12).map(i=>'m'+(i+1)),this.target).slice(1));
     const {Y,d}=randDate(m),s=solve(Y,m,d);
-    return {key:'m'+m,type:'weekday',sub:`${Y} doomsday is ${chip(s.dd)}${m<=2?(s.leap?' · leap':' · common'):''}`,ask:`${MONS[m-1]} ${d}`,ans:s.wd,why:monthLine(s),month:m};
+    return {key:'m'+m,type:'weekday',sub:`${Y} doomsday is ${chip(s.dd)}${m<=2?(s.leap?' · leap':' · common'):''}`,ask:`${MONS[m-1]} ${d}`,ctx:`${MONS[m-1]} ${d}, ${Y}`,ans:s.wd,why:monthLine(s),month:m};
   }});
 def({id:'full',title:'Full date',sub:'The real thing, against the clock',target:10000,lesson:'together',
   desc:'Any date in your chosen year range → weekday. Every step in your head.',
@@ -545,19 +621,10 @@ def({id:'guided',title:'Guided walkthrough',sub:'Every step checked live',target
       {key:'dd',type:'weekday',q:`Doomsday of ${Y}`,ans:s.dd,why:`${s.anchor} + ${s.a} + ${s.b} + ${s.c} = ${sum} → ${chipN(s.dd)}`}];
     if(m<=2)steps.push({key:'leap',type:'yesno',q:`Is ${Y} a leap year?`,ans:s.leap?1:0,why:DR.leap.tip});
     steps.push({key:'ma',type:'keypad',q:`Doomsday date in ${MON[m-1]}`,ans:s.ma,reveal:`${MONS[m-1]} ${s.ma}`,why:`${MON[m-1]}: ${MNEMO[m-1]}`});
-    steps.push({key:'wd',type:'weekday',q:`${MONS[m-1]} ${d} is…`,ans:s.wd,why:monthLine(s)});
+    steps.push({key:'wd',type:'weekday',q:`${MONS[m-1]} ${d} is…`,ctx:`${MONS[m-1]} ${d}, ${Y}`,ans:s.wd,why:monthLine(s)});
     return {guided:true,title:`${MON[m-1]} ${d}, ${Y}`,Y,m,d,steps,month:m};
   }});
-def({id:'daily',title:'Daily five',sub:'Same five dates all day',target:10000,lesson:'together',fixed:5,hidden:true,
-  desc:'Five fixed dates from 1900–2099, new every day. Beat your best total time.',tip:'',
-  gen(){const {Y,m,d}=R.list[R.i];return fullQ(Y,m,d);}});
 const STEP_NAMES={anchor:'Century anchor',a:'Year ÷ 12',b:'Remainder',c:'Remainder ÷ 4',dd:'Year doomsday',leap:'Leap year',ma:'Month doomsday',wd:'Final count'};
-
-function dailyList(){
-  let h=2166136261;for(const ch of todayKey())h=Math.imul(h^ch.charCodeAt(0),16777619);
-  let seed=h>>>0;const r=()=>{seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};
-  return range(5).map(()=>{const Y=1900+Math.floor(r()*200),m=1+Math.floor(r()*12);return {Y,m,d:1+Math.floor(r()*dim(Y,m))};});
-}
 
 /* ---------- sound + haptics ---------- */
 let AC;
@@ -575,37 +642,30 @@ function beep(ok){
 }
 
 /* ---------- views ---------- */
-let tab='train';
-const TABS=[['train','Train'],['learn','Learn'],['solve','Solve'],['stats','Progress']];
+let tab='daily';
+const TABS=[['daily','Daily'],['train','Train'],['learn','Learn']];
+ICON.daily=ICON.cal;
 function render(){
-  $('#tabs').innerHTML=TABS.map(([k,l])=>`<button class="${k===tab?'on':''}" data-tab="${k}">${ICON[k]}${l}</button>`).join('');
-  $('#view').innerHTML=({train:vTrain,learn:vLearn,solve:vSolve,stats:vStats})[tab]();
+  const on=tab==='solve'?'train':tab;
+  $('#tabs').innerHTML=TABS.map(([k,l])=>`<button class="${k===on?'on':''}" data-tab="${k}">${ICON[k]}${l}</button>`).join('');
+  $('#view').innerHTML=({daily:vDaily,train:vTrain,learn:vLearn,solve:vSolve})[tab]();
   if(tab==='solve'&&SV.revealed)renderSolveResult();
 }
 
 function vTrain(){
-  const t=new Date(),Y=t.getFullYear(),s=solve(Y,t.getMonth()+1,t.getDate()),sd=streakDays();
-  const dl=S.daily[todayKey()],bd=S.best['daily:count'];
+  const t=new Date(),Y=t.getFullYear(),s=solve(Y,t.getMonth()+1,t.getDate());
   let n=0;
-  return `<header class="top"><div><h1>Doomsday <span>Dojo</span></h1><p>Name the weekday of any date, in your head.</p></div>
-    <span class="pill flame">${ICON.flame}${sd} day${sd===1?'':'s'}</span></header>
-  <section class="card today"><div class="sun"></div>
-    <div class="qsub">Today · ${MON[t.getMonth()]} ${t.getDate()}, ${Y}</div>
-    <div class="big">${Y} doomsday is ${chip(s.dd)}</div>
-    <div class="years">${[Y-1,Y+1,Y+2].map(y=>`<span>${y} ${chip(solve(y,1,1).dd)}</span>`).join('')}</div>
-    <button class="btn ghost sm" data-act="today-solve">Walk through today</button>
-  </section>
-  <section class="card daily"><div class="ic">${ICON.cal}</div>
-    <div class="tx"><b>Daily five</b><small>${dl?`Today: ${dl.ok}/5 in ${sec(dl.total)}`:'Five fresh dates, every day'}${bd?` · best ${sec(bd.total)}`:''}</small></div>
-    ${dl?`<button class="btn ghost sm go" data-drill="daily">Retry</button>`:`<button class="btn sm go" data-drill="daily">Start</button>`}
-  </section>
+  return `<header class="top"><div><h1>Train</h1><p>${Y} doomsday is ${chip(s.dd)} · ${Y+1} is ${chip(solve(Y+1,1,1).dd)}</p></div></header>
+  <button class="card prac" data-act="open-solve"><span class="ic">${ICON.solve}</span>
+    <span><b>Practice solves</b><small>Work any date in your head, then check every step</small></span></button>
   ${GROUPS.map(g=>`<div class="gh">${g.name}</div>${g.ids.map(id=>{
     n++;const D=DR[id],st=drillStats(id);
     return `<button class="drow ${st&&st.stars===3?'m3':''}" data-drill="${id}"><span class="dn">${n}</span>
       <span class="dt"><b>${D.title}</b><small>${D.sub}</small></span>
       <span class="dr">${starsHtml(st?st.stars:0)}<small>${st?`${pct(st.acc)} · ${sec(st.med)}`:'new'}</small></span></button>`;
   }).join('')}`).join('')}
-  <p class="foot">Stars: ★ 80% accuracy · ★★ 90% and within 2× target time · ★★★ 95% and under target.<br>Based on your last 30 answers per skill.</p>`;
+  <p class="foot">★ 80% accuracy · ★★ 90% and within 2× target · ★★★ 95% and under target (last 30 answers)</p>
+  ${vSettings()}`;
 }
 
 /* --- start sheet --- */
@@ -719,7 +779,7 @@ function answer(v){
   // feedback
   const tg=R.D.target,spd=ms<=tg?'fast':ms<=tg*2?'ok':'slow';
   const wait=!ok||!S.settings.auto;
-  $('#fb').innerHTML=`<div class="verdict ${ok?'ok':'bad'}"><span>${ok?'✓ Correct':'✗ It’s '+lab(st)}</span><span class="spd ${spd}">${sec(ms)}</span></div>
+  $('#fb').innerHTML=`<div class="verdict ${ok?'ok':'bad'}"><span>${st.ctx?`${ok?'✓':'✗'} ${st.ctx} was a ${lab(st)}`:ok?'✓ Correct':'✗ It’s '+lab(st)}</span><span class="spd ${spd}">${sec(ms)}</span></div>
     <div class="why">${st.why}</div>${wait?`<button class="btn ${ok?'':'ghost'} next" data-act="next">${last?'Next':'Continue'} →</button>`:''}`;
   $('#hOk').textContent=R.ok;$('#hStreak').textContent=R.streak;$('#hS').className=R.streak>=5?'hot':'';
   $('#hTime').textContent=sec(ms);
@@ -882,7 +942,7 @@ function yearTable(C){
 const _t=new Date();
 const SV={m:_t.getMonth()+1,d:_t.getDate(),Y:_t.getFullYear(),guess:null,revealed:false};
 function vSolve(){
-  return `<header class="top"><div><h1>Solve <span>&amp;</span> check</h1><p>Work a date in your head, pick your answer, then check every step.</p></div></header>
+  return `<button class="back" data-act="back-train">‹ Train</button><header class="top" style="margin-top:2px"><div><h1>Practice solves</h1><p>Work a date in your head, pick your answer, then check every step.</p></div></header>
   <section class="card">
     <div class="dateform"><select id="sm" aria-label="Month">${MON.map((x,i)=>`<option value="${i+1}" ${i+1===SV.m?'selected':''}>${x}</option>`).join('')}</select>
       <input id="sd" inputmode="numeric" aria-label="Day" value="${SV.d}"><input id="sy" inputmode="numeric" aria-label="Year" value="${SV.Y}"></div>
@@ -936,47 +996,208 @@ function renderSolveResult(){
     <div class="legend"><span>doomsdays (${WD[s.dd]})</span><span class="t">your date</span></div></section>`;
 }
 
-/* --- stats --- */
-function vStats(){
-  const T=S.totals,sd=streakDays();
-  const fullR=S.rounds.filter(r=>(r.id==='full')&&r.med).slice(-20);
-  let spark='<div class="empty">Finish a Full date round to see your trend.</div>';
-  if(fullR.length>=2){
-    const xs=fullR.map(r=>r.med),mx=Math.max(...xs),mn=Math.min(...xs),W=300,H=70,P=6;
-    const pts=xs.map((v,i)=>`${(P+i*(W-2*P)/(xs.length-1)).toFixed(1)},${(P+(mx===mn?.5:(v-mn)/(mx-mn))*(H-2*P)).toFixed(1)}`).join(' ');
-    spark=`<svg class="spark" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"><polyline points="${pts}" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>
-      <div class="legend" style="justify-content:space-between"><span style="display:none"></span><small class="muted">Median per round · lower is faster · latest ${sec(xs[xs.length-1])} · best ${sec(mn)}</small></div>`;
-  }
-  const bars=range(12).map(i=>{const M=S.months[i+1];const a=M&&M.n?M.c/M.n:null;
-    return `<div title="${MON[i]}"><i class="${a===null?'none':a<.8?'lo':''}" style="height:${a===null?3:Math.max(4,a*100)}%"></i><small>${MON[i][0]}</small></div>`;}).join('');
-  const weak=range(12).map(i=>({i,M:S.months[i+1]})).filter(x=>x.M&&x.M.n>=3).sort((a,b)=>a.M.c/a.M.n-b.M.c/b.M.n)[0];
-  return `<header class="top"><div><h1>Progress</h1><p>Your numbers and settings.</p></div><span class="pill flame">${ICON.flame}${sd}</span></header>
-  <div class="tiles" style="margin-top:0">
-    <div class="tile"><b>${T.n}</b><small>answers</small></div>
-    <div class="tile"><b>${T.n?pct(T.c/T.n):'–'}</b><small>accuracy</small></div>
-    <div class="tile"><b>${sd}</b><small>day streak</small></div>
-    <div class="tile"><b>${Math.round(T.ms/60000)}m</b><small>time trained</small></div></div>
-  <section class="card"><h3>Full-date speed</h3>${spark}</section>
-  <section class="card"><h3>Accuracy by month</h3><div class="bars">${bars}</div>
-    <p class="why" style="margin-bottom:0">${weak?`Weakest: <b>${MON[weak.i]}</b> (${pct(weak.M.c/weak.M.n)}). Doomsday ${MNEMO[weak.i]}.`:'From full-date and doomsday-to-date answers. Red is under 80%.'}</p></section>
-  <section class="card"><h3>Skills</h3>${GROUPS.flatMap(g=>g.ids).map(id=>{const D=DR[id],st=drillStats(id),b=S.best[id+':count'],bb=S.best[id+':blitz'];
-    return `<div class="srow"><b>${D.title}</b>${starsHtml(st?st.stars:0)}<small>${st?`${pct(st.acc)} · median ${sec(st.med)} · target ${sec(D.target)}`:'Not practised yet'}</small>
-      <small>${[b&&`best ${sec(b.med)}`,bb&&`blitz ${bb.ok}`].filter(Boolean).join(' · ')}</small></div>`;}).join('')}</section>
-  <section class="card"><h3>Settings</h3>
+/* --- settings --- */
+function vSettings(){
+  return `<div class="gh">Settings</div><section class="card">
     <div class="set"><div>Year range<small>For year and full-date drills</small></div>
       <select id="srange">${[['2000-2099','2000–2099'],['1900-2099','1900–2099'],['1800-2199','1800–2199'],['1600-2399','1600–2399']].map(([v,l])=>`<option value="${v}" ${S.settings.range===v?'selected':''}>${l}</option>`).join('')}</select></div>
     <div class="set"><div>Sound & haptics</div><button class="tg ${S.settings.sound?'on':''}" data-act="toggle" data-k="sound" aria-label="Sound"></button></div>
     <div class="set"><div>Auto-advance<small>Move on after a correct answer</small></div><button class="tg ${S.settings.auto?'on':''}" data-act="toggle" data-k="auto" aria-label="Auto-advance"></button></div>
     <div class="set"><div>Numbers on day buttons<small>Shows 0–6 under each weekday</small></div><button class="tg ${S.settings.nums?'on':''}" data-act="toggle" data-k="nums" aria-label="Numbers"></button></div>
-    <button class="danger" data-act="reset">Reset all progress</button></section>
-  <p class="foot">Doomsday Dojo · works offline once loaded · progress is saved on this device</p>`;
+    <button class="danger" data-act="reset">Reset training progress</button></section>`;
 }
+
+/* ---------- daily five game ---------- */
+// Shared scores live in Supabase. The publishable key is meant to be public; table rules only allow reading and adding scores.
+const SB={url:'https://jjhzwpbkrilqnlczyobp.supabase.co',key:'sb_publishable_V3mHc9KGh8ygXyRfCM7cHQ_KgmEJvv2'};
+const online=()=>!!(SB.url&&SB.key);
+const EPOCH=Date.UTC(2026,9,29);
+const APP_URL='https://sauv2616-hub.github.io/doomsday-dojo/';
+const MODEL={mean:560,sd:190};
+function puzzleNo(t=new Date()){return Math.floor((Date.UTC(t.getFullYear(),t.getMonth(),t.getDate())-EPOCH)/864e5)+1;}
+// Same five dates for everyone with the same calendar date (pure integer hash of the date)
+function dailyList(){
+  let h=2166136261;for(const ch of todayKey())h=Math.imul(h^ch.charCodeAt(0),16777619);
+  let seed=h>>>0;const r=()=>{seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};
+  return range(5).map(()=>{const Y=1900+Math.floor(r()*200),m=1+Math.floor(r()*12);return {Y,m,d:1+Math.floor(r()*dim(Y,m))};});
+}
+const qPts=(ok,ms)=>ok?100+Math.round(100*Math.max(0,Math.min(1,(30000-ms)/27000))):0;
+const tileOf=r=>!r?'':!r.ok?'R':r.ms<=10000?'G':'Y';
+const esc=x=>String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const cleanName=x=>String(x||'').replace(/\s+/g,' ').trim().slice(0,16);
+const dstr=x=>`${MONS[x.m-1]} ${x.d}, ${x.Y}`;
+function today(){const p=puzzleNo();S.games=S.games||{};return S.games[p];}
+function gBoot(){
+  if(!S.cid){S.cid=(crypto.randomUUID?crypto.randomUUID():String(Math.random()).slice(2)+Date.now());save();}
+  const g=today();
+  if(g&&!g.done)gFinish(g,true);           // app closed mid-game: score what was answered
+  if(g&&g.done&&!g.submitted)sbSubmit(puzzleNo(),g);
+  sbLoad(puzzleNo());
+}
+let G=null,gTimer=0;
+function gStart(){
+  const inp=$('#gname');if(inp){S.name=cleanName(inp.value);}
+  const p=puzzleNo();if(S.games[p]&&S.games[p].done)return;
+  const g={p,list:dailyList(),res:[],done:false,submitted:false,started:Date.now()};
+  S.games[p]=g;save();
+  G={g,i:0,locked:false};
+  document.body.classList.add('in-drill');
+  const el=$('#drill');el.hidden=false;el.className='game';
+  el.innerHTML=`<header class="dtop"><button class="icon" data-act="g-quit" aria-label="Quit">${ICON.x}</button>
+    <div class="dtitle">Daily Five #${p}<small>${WD[new Date().getDay()]}, ${MON[new Date().getMonth()]} ${new Date().getDate()}</small></div>
+    <div class="dprog num" id="gclock">0.0s</div></header>
+    <div class="tiles5" id="gtiles"></div>
+    <div class="dbody"><div class="gq"><div class="qsub" id="gverb"></div><div class="gdate" id="gdate"></div></div>
+    <div class="gfb" id="gfb"></div></div>
+    <div class="pad"><div class="g7">${range(7).map(i=>`<button class="gk w${i}" data-gv="${i}">${WDS[i]}${S.settings.nums?`<small>${i}</small>`:''}</button>`).join('')}</div></div>`;
+  gShow();requestAnimationFrame(gLoop);
+}
+function gTiles(g,cur){return range(5).map(i=>{const t=tileOf(g.res[i]);return `<div class="tile5 ${t||(i===cur?'cur':'')}">${t?'':i+1}</div>`;}).join('');}
+function gShow(){
+  const x=G.g.list[G.i];
+  $('#gtiles').innerHTML=gTiles(G.g,G.i);
+  $('#gverb').textContent=verb(x.Y,x.m,x.d);
+  $('#gdate').outerHTML=`<div class="gdate" id="gdate">${dstr(x)}</div>`;
+  $('#gfb').className='gfb';$('#gfb').innerHTML='';
+  document.querySelectorAll('[data-gv]').forEach(b=>b.className=b.className.replace(/ (right|wrong)/g,''));
+  G.locked=false;G.t0=performance.now();
+}
+function gLoop(){
+  if(!G)return;
+  const done=G.g.res.reduce((a,r)=>a+r.ms,0),cur=G.locked?0:performance.now()-G.t0;
+  const c=$('#gclock');if(c)c.textContent=((done+cur)/1000).toFixed(1)+'s';
+  requestAnimationFrame(gLoop);
+}
+function gAnswer(v){
+  if(!G||G.locked)return;
+  G.locked=true;
+  const x=G.g.list[G.i],ans=solve(x.Y,x.m,x.d).wd,ms=performance.now()-G.t0,ok=v===ans,pts=qPts(ok,ms);
+  G.g.res.push({v,ok,ms:Math.round(ms),pts});save();
+  document.querySelectorAll('[data-gv]').forEach(b=>{const n=+b.dataset.gv;if(n===ans)b.className+=' right';else if(n===v)b.className+=' wrong';});
+  $('#gtiles').innerHTML=gTiles(G.g,-1);
+  const fb=$('#gfb');fb.className='gfb '+(ok?'ok':'bad');
+  fb.innerHTML=ok?`✓ ${WD[ans]} · +${pts}<small>${sec(ms)}</small>`:`✗ ${dstr(x)} was a ${WD[ans]}<small>${sec(ms)}</small>`;
+  beep(ok);
+  setTimeout(()=>{if(!G)return;G.i++;if(G.i>=5)gFinish(G.g);else gShow();},ok?650:1500);
+}
+function gFinish(g,silent){
+  while(g.res.length<5)g.res.push({v:-1,ok:false,ms:30000,pts:0});
+  g.done=true;g.score=g.res.reduce((a,r)=>a+r.pts,0);g.correct=g.res.filter(r=>r.ok).length;
+  g.ms=g.res.reduce((a,r)=>a+r.ms,0);g.tiles=g.res.map(tileOf).join('');save();
+  if(!silent){G=null;$('#drill').hidden=true;$('#drill').innerHTML='';$('#drill').className='';document.body.classList.remove('in-drill');tab='daily';render();window.scrollTo(0,0);}
+  sbSubmit(g.p,g);
+}
+function gQuit(){if(!G)return;const g=G.g;G=null;gFinish(g);}
+
+/* --- shared scores (Supabase REST) --- */
+function sbHeaders(){const h={apikey:SB.key,'Content-Type':'application/json'};if(SB.key.startsWith('eyJ'))h.Authorization='Bearer '+SB.key;return h;}
+async function sbSubmit(p,g){
+  if(!online()||g.submitted)return;
+  try{
+    const r=await fetch(SB.url+'/rest/v1/daily_scores',{method:'POST',headers:{...sbHeaders(),Prefer:'return=minimal'},
+      body:JSON.stringify({puzzle:p,client_id:S.cid,player:S.name||'Anonymous',score:g.score,correct:g.correct,ms:Math.round(g.ms),tiles:g.tiles})});
+    if(r.ok||r.status===409){g.submitted=true;save();}
+  }catch(e){}
+  sbLoad(p);
+}
+let LB={p:null,rows:null,err:null};
+async function sbLoad(p){
+  if(!online()){LB={p,rows:null,err:'offline'};return;}
+  try{
+    const r=await fetch(`${SB.url}/rest/v1/daily_scores?puzzle=eq.${p}&select=client_id,player,score,correct,ms,tiles&order=score.desc,ms.asc&limit=5000`,{headers:sbHeaders()});
+    LB={p,rows:r.ok?await r.json():null,err:r.ok?null:'error'};
+  }catch(e){LB={p,rows:null,err:'network'};}
+  if(tab==='daily'&&!G)render();
+}
+
+/* --- daily view --- */
+function vDaily(){
+  const p=puzzleNo(),g=today(),t=new Date();
+  const head=`<div class="dhead"><div class="kick">Daily Five · #${p}</div><h1>Doomsday</h1><p>${WD[t.getDay()]}, ${MON[t.getMonth()]} ${t.getDate()}, ${t.getFullYear()}</p></div>`;
+  if(!g||!g.done){
+    const n=LB.rows?LB.rows.length:0;
+    return `${head}<div class="tiles5">${range(5).map(i=>`<div class="tile5">${i+1}</div>`).join('')}</div>
+    <section class="card"><div class="rules">
+      <div><b class="n">5</b><span>Five dates, the same for everyone today.</span></div>
+      <div><b class="n">7</b><span>Tap the weekday each one fell on.</span></div>
+      <div><b class="n">⏱</b><span>100 points per correct day, plus up to 100 for speed.</span></div></div>
+      <div class="namein"><label for="gname">Your name</label><input id="gname" maxlength="16" placeholder="for the leaderboard" value="${esc(S.name||'')}" autocomplete="nickname"></div>
+      <button class="btn" data-act="g-play">Play today’s five</button></section>
+    <p class="cd">${online()?(n?`${n} player${n===1?'':'s'} so far today`:'Be the first to play today'):'Leaderboard not connected yet'}</p>
+    <p class="foot">New in the Doomsday method? Learn it in the Learn tab, then drill it in Train.</p>`;
+  }
+  const others=(LB.rows||[]).filter(r=>r.client_id!==S.cid);
+  const sc=others.map(r=>r.score);
+  const beat=sc.length?(sc.filter(x=>x<g.score).length+.5*sc.filter(x=>x===g.score).length)/sc.length:null;
+  const rankTxt=!online()?'Leaderboard not connected yet'
+    :LB.rows===null?'Loading today’s players…'
+    :!sc.length?'You’re the first player today!':`You beat <em>${Math.round(beat*100)}%</em> of ${sc.length} player${sc.length===1?'':'s'}`;
+  const rows=(LB.rows||[]).slice();
+  if(online()&&LB.rows&&!rows.some(r=>r.client_id===S.cid))rows.push({client_id:S.cid,player:S.name||'You',score:g.score,ms:g.ms,tiles:g.tiles});
+  rows.sort((a,b)=>b.score-a.score||a.ms-b.ms);
+  const myRank=rows.findIndex(r=>r.client_id===S.cid);
+  const shown=rows.slice(0,10);if(myRank>=10)shown.push(rows[myRank]);
+  return `${head}
+  <div class="tiles5">${g.tiles.split('').map(t=>`<div class="tile5 ${t}"></div>`).join('')}</div>
+  <div class="big-score"><b>${g.score}</b><small>points out of 1000</small></div>
+  <div class="meta3"><div><b>${g.correct}/5</b><small>correct</small></div><div><b>${sec(g.ms)}</b><small>total time</small></div><div><b>${myRank>=0&&LB.rows?'#'+(myRank+1):'–'}</b><small>rank</small></div></div>
+  <section class="card"><div class="rank">${rankTxt}</div>${curveSvg(g.score,sc)}
+    <p class="why" style="text-align:center;margin:4px 0 0">${sc.length>=5?'Curve fitted to today’s scores':'Curve shows typical scores'}${sc.length?' · dots are other players':''}</p></section>
+  <button class="btn" data-act="g-share">Share result</button>
+  ${online()&&LB.rows?`<div class="gh">Today’s leaderboard</div><section class="card"><table class="lb">${shown.map(r=>{const i=rows.indexOf(r);
+    return `<tr class="${r.client_id===S.cid?'me':''}"><td class="r">${i+1}</td><td>${esc(r.player)} <span class="mini">${String(r.tiles||'').split('').map(t=>`<i class="${t}"></i>`).join('')}</span></td><td class="t">${sec(r.ms)}</td><td class="s">${r.score}</td></tr>`;}).join('')}</table>
+    <button class="link" data-act="g-refresh">Refresh</button></section>`:''}
+  <div class="gh">Review</div><section class="card">${g.list.map((x,i)=>{const s=solve(x.Y,x.m,x.d),r=g.res[i];
+    return `<details class="rev"><summary><span class="mini"><i class="${tileOf(r)}"></i></span>${dstr(x)} · ${WD[s.wd]}<span class="pts">${r.v<0?'skipped':`${sec(r.ms)} · +${r.pts}`}</span></summary>
+      <div class="why">${r.ok?'':r.v<0?'Not answered. ':`You said ${WD[r.v]}. `}${whyFull(s)}</div></details>`;}).join('')}</section>
+  <div class="cd">Next Daily Five in<b id="cd">${countdown()}</b></div>
+  <p class="foot">Want more? Train → Practice solves or Full date.</p>`;
+}
+function countdown(){const n=new Date(),m=new Date(n.getFullYear(),n.getMonth(),n.getDate()+1),s=Math.max(0,Math.floor((m-n)/1000));
+  return `${Math.floor(s/3600)}:${pad(Math.floor(s/60)%60)}:${pad(s%60)}`;}
+function tick(){
+  const c=$('#cd');if(c)c.textContent=countdown();
+  // roll over to the new puzzle at midnight
+  if(tab==='daily'&&!G&&LB.p!==null&&LB.p!==puzzleNo()){LB={p:puzzleNo(),rows:null,err:null};render();sbLoad(puzzleNo());}
+}
+function curveSvg(me,sc){
+  const W=320,H=130,L=12,Rt=308,B=104,T=12,X=v=>L+(Math.max(0,Math.min(1000,v))/1000)*(Rt-L);
+  let mean=MODEL.mean,sd=MODEL.sd;
+  if(sc.length>=5){mean=sc.reduce((a,b)=>a+b,0)/sc.length;sd=Math.max(60,Math.sqrt(sc.reduce((a,b)=>a+(b-mean)**2,0)/sc.length));}
+  const pdf=v=>Math.exp(-((v-mean)**2)/(2*sd*sd)),pts=[];
+  for(let v=0;v<=1000;v+=10)pts.push([X(v),B-pdf(v)*(B-T)]);
+  const line=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ');
+  const area=line+` L${Rt} ${B} L${L} ${B} Z`,mx=X(me);
+  return `<svg class="curve" viewBox="0 0 ${W} ${H}" role="img" aria-label="Score distribution with your score marked">
+    <defs><clipPath id="beat"><rect x="0" y="0" width="${mx}" height="${H}"/></clipPath></defs>
+    <path d="${area}" fill="var(--card2)"/>
+    <path d="${area}" fill="color-mix(in srgb,var(--accent) 30%,transparent)" clip-path="url(#beat)"/>
+    <path d="${line}" fill="none" stroke="var(--muted)" stroke-width="1.5"/>
+    <line x1="${L}" y1="${B}" x2="${Rt}" y2="${B}" stroke="var(--line)" stroke-width="1.5"/>
+    ${sc.map((v,i)=>`<circle cx="${X(v).toFixed(1)}" cy="${B+8+(i%3)*4}" r="2.6" fill="var(--faint)" opacity=".8"/>`).join('')}
+    <line x1="${mx}" y1="${T-4}" x2="${mx}" y2="${B}" stroke="var(--accent)" stroke-width="2.5"/>
+    <circle cx="${mx}" cy="${B}" r="5" fill="var(--accent)"/>
+    <text x="${Math.min(Rt-30,Math.max(L+30,mx))}" y="${T-1}" text-anchor="middle" font-size="12" font-weight="800" fill="var(--accent)">You · ${me}</text>
+    <text x="${L}" y="${H-1}" font-size="10" fill="var(--faint)">0</text><text x="${Rt}" y="${H-1}" font-size="10" fill="var(--faint)" text-anchor="end">1000</text>
+  </svg>`;
+}
+async function gShare(){
+  const g=today();if(!g)return;
+  const others=(LB.rows||[]).filter(r=>r.client_id!==S.cid).map(r=>r.score);
+  const top=others.length?Math.max(1,Math.round(100-100*(others.filter(x=>x<g.score).length+.5*others.filter(x=>x===g.score).length)/others.length)):null;
+  const em={G:'🟩',Y:'🟨',R:'🟥'};
+  const text=`Doomsday Daily Five #${g.p} — ${g.score}/1000\n${g.tiles.split('').map(t=>em[t]).join('')} ⏱ ${sec(g.ms)}${top?`\nTop ${top}% today`:''}\n${APP_URL}`;
+  try{if(navigator.share){await navigator.share({text});return;}}catch(e){if(e&&e.name==='AbortError')return;}
+  try{await navigator.clipboard.writeText(text);toast('Result copied — paste it to your friends');}catch(e){toast('Couldn’t copy');}
+}
+function toast(m){const d=document.createElement('div');d.className='toast';d.textContent=m;document.body.appendChild(d);setTimeout(()=>d.remove(),2200);}
 
 /* ---------- events ---------- */
 document.addEventListener('click',e=>{
   const t=e.target;
   if(t.closest('[data-stop]')&&!t.closest('[data-act],[data-mode]'))return;
   const tabB=t.closest('[data-tab]');if(tabB){tab=tabB.dataset.tab;render();window.scrollTo(0,0);return;}
+  const gv=t.closest('[data-gv]');if(gv){gAnswer(+gv.dataset.gv);return;}
   const v=t.closest('#pad [data-v]');if(v){answer(+v.dataset.v);return;}
   const k=t.closest('#pad [data-k]');if(k){keypad(k.dataset.k);return;}
   const md=t.closest('[data-mode]');if(md&&SH){SH.mode=md.dataset.mode;document.querySelectorAll('#seg button').forEach(b=>b.classList.toggle('on',b===md));return;}
@@ -989,6 +1210,12 @@ document.addEventListener('click',e=>{
   else if(act==='quit')quitDrill();
   else if(act==='next')advance();
   else if(act==='again'){const id=R.id,mode=R.mode;R=null;startDrill(id,mode);}
+  else if(act==='g-play')gStart();
+  else if(act==='g-quit')gQuit();
+  else if(act==='g-share')gShare();
+  else if(act==='g-refresh'){sbLoad(puzzleNo());}
+  else if(act==='open-solve'){tab='solve';render();window.scrollTo(0,0);}
+  else if(act==='back-train'){tab='train';render();window.scrollTo(0,0);}
   else if(act==='today-solve'){const n=new Date();Object.assign(SV,{m:n.getMonth()+1,d:n.getDate(),Y:n.getFullYear(),guess:null,revealed:true});tab='solve';render();window.scrollTo(0,0);}
   else if(act==='s-today'){const n=new Date();Object.assign(SV,{m:n.getMonth()+1,d:n.getDate(),Y:n.getFullYear(),guess:null,revealed:false});render();}
   else if(act==='s-rand'){Object.assign(SV,randDate(),{guess:null,revealed:false});render();}
@@ -996,16 +1223,18 @@ document.addEventListener('click',e=>{
     $('#srev').textContent=SV.guess!==null?'Check my answer':'Show the answer';}
   else if(act==='s-reveal'){readSolve();SV.revealed=true;renderSolveResult();$('#sres').scrollIntoView({behavior:'smooth',block:'start'});}
   else if(act==='toggle'){const key=a.dataset.k;S.settings[key]=!S.settings[key];save();a.classList.toggle('on',S.settings[key]);}
-  else if(act==='reset'){if(confirm('Erase all progress, stats and bests on this device?')){const st=S.settings;S=defaults();S.settings=st;save();render();}}
+  else if(act==='reset'){if(confirm('Erase training progress on this device? Your Daily Five history is kept.')){const keep={settings:S.settings,games:S.games,cid:S.cid,name:S.name};S=Object.assign(defaults(),keep);save();render();}}
 });
 document.addEventListener('change',e=>{
   if(e.target.id==='ytc'){ytC=+e.target.value;$('#ytab').innerHTML=yearTable(ytC);}
   else if(e.target.id==='srange'){S.settings.range=e.target.value;save();}
+  else if(e.target.id==='gname'){S.name=cleanName(e.target.value);e.target.value=S.name;save();}
   else if(['sm','sd','sy'].includes(e.target.id)){readSolve();if(SV.revealed)renderSolveResult();}
 });
 document.addEventListener('input',e=>{if(['sd','sy'].includes(e.target.id)){SV.revealed=false;$('#sres').innerHTML='';}});
 document.addEventListener('toggle',e=>{if(e.target.classList&&e.target.classList.contains('lesson')&&e.target.open)openLesson=e.target.id.slice(2);},true);
 document.addEventListener('keydown',e=>{
+  if(G){if(/^[0-6]$/.test(e.key))gAnswer(+e.key);else if(e.key==='Escape')gQuit();return;}
   if(SH&&e.key==='Enter'){startDrill(SH.id,SH.mode);return;}
   if(SH&&e.key==='Escape'){closeSheet();return;}
   if(!R)return;
@@ -1018,7 +1247,9 @@ document.addEventListener('keydown',e=>{
   else if(/^[0-6]$/.test(e.key))answer(+e.key);
 });
 
+gBoot();
 render();
+setInterval(tick,1000);
 if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
 </body>
