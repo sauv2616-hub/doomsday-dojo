@@ -515,7 +515,7 @@ h3{font-family:var(--brush);font-weight:400;letter-spacing:.03em;font-size:19px}
 .cal .c.tgt{background:var(--paint);color:var(--ink)}
 .lesson summary{font-family:var(--brush);font-weight:400;letter-spacing:.03em;font-size:17px}
 .lesson .lb{color:var(--text)}
-.toast{border-radius:0;font-family:var(--brush);font-weight:400;letter-spacing:.04em;background:var(--paint);color:var(--ink);
+.toast{white-space:nowrap;padding:10px 22px;border-radius:0;font-family:var(--brush);font-weight:400;letter-spacing:.04em;background:var(--paint);color:var(--ink);
   -webkit-mask:var(--m-swipe) center/100% 100% no-repeat;mask:var(--m-swipe) center/100% 100% no-repeat}
 
 /* snappy, stepped motion instead of smooth easing */
@@ -540,6 +540,19 @@ body.hero-on #scene{display:block}
 .hero-meta i{font-style:normal;color:#6cb04f}
 .hero .link{color:#f2c14b;padding:10px;font-size:15px;text-shadow:0 1px 3px rgba(0,0,0,.8)}
 .sheet .rules span{color:var(--text)}
+.sc{margin:10px auto 0;max-width:440px;text-align:left}
+.sc summary{list-style:none;display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-family:var(--brush);font-weight:400;font-size:15px;letter-spacing:.04em;
+  color:var(--ink);background:var(--paint);padding:6px 14px 5px;-webkit-mask:var(--m-swipe) center/100% 100% no-repeat;mask:var(--m-swipe) center/100% 100% no-repeat}
+.sc summary::-webkit-details-marker{display:none}
+.sc summary::before{content:"▸";font-family:var(--font);font-size:12px}
+.sc[open] summary::before{content:"▾"}
+.sc-rows{margin-top:8px;padding:10px 14px;font-size:15px;color:#2a2118;background:var(--tex-paper,none) center/220px repeat,#efe3c6;
+  -webkit-mask:var(--m-b) center/100% 100% no-repeat;mask:var(--m-b) center/100% 100% no-repeat}
+.sc-rows>div{display:flex;justify-content:space-between;gap:12px;padding:4px 0;border-bottom:1px dashed #cdbb98}
+.sc-rows>div span{color:#6b5a45;font-weight:600}
+.sc-rows>div b{font-weight:800}
+.sc-rows .sc-res{border-bottom:0;justify-content:center;padding-top:7px;font-family:var(--brush);font-size:17px;letter-spacing:.03em}
+.rev .sc-rows{margin:8px 0 6px}
 </style>
 </head>
 <body>
@@ -1251,6 +1264,18 @@ function factCard(x){
     ${x.jul?`<small>Recorded as ${MONS[x.jul[1]-1]} ${x.jul[2]}, ${x.jul[0]} on the Julian calendar used at the time</small>`:''}
     ${dateExtras(x).map(e=>`<small>${e}</small>`).join('')}</div>`;
 }
+// The three-line shortcut shown after a miss: the year's doomsday, the nearest doomsday date, and the count from it
+function shortcutRows(s){
+  const near=s.m===3&&s.nd===0?`${s.leap?'2/29':'2/28'} (last day of Feb)`:`${s.m}/${s.nd}`,n=Math.abs(s.diff);
+  const step=s.diff===0?'0 days — it’s a doomsday':`${s.diff>0?'+':'−'}${n} day${n===1?'':'s'}`;
+  return `<div class="sc-rows">
+    <div><span>Doomsday ${s.Y}</span><b>${WD[s.dd]}</b></div>
+    <div><span>Closest doomsday</span><b>${near}</b></div>
+    <div><span>Then count</span><b>${step}</b></div>
+    <div class="sc-res">${WD[s.dd]} ${s.diff===0?'':`${s.diff>0?'+':'−'} ${n}`} → <b>${WD[s.wd]}</b></div></div>`;
+}
+function shortcutTab(x){const s=solve(x.Y,x.m,x.d);
+  return `<details class="sc"><summary>Show the shortcut</summary>${shortcutRows(s)}</details>`;}
 function today(){const p=puzzleNo();S.d3=S.d3||{};return S.d3[p];}
 function gBoot(){
   if(!S.cid){S.cid=(crypto.randomUUID?crypto.randomUUID():String(Math.random()).slice(2)+Date.now());save();}
@@ -1265,6 +1290,7 @@ function gStart(){
   const g={p,list:dailyList(p),res:[],done:false,submitted:false,started:Date.now()};
   S.d3[p]=g;save();
   G={g,i:0,locked:false};
+  showScene(false);
   document.body.classList.add('in-drill');
   const el=$('#drill');el.hidden=false;el.className='game';
   el.innerHTML=`<header class="dtop"><button class="icon" data-act="g-quit" aria-label="Quit">${ICON.x}</button>
@@ -1305,6 +1331,7 @@ function gAnswer(v){
   // the trivia is the reward: show it and wait for a tap (the clock is already stopped)
   const fb=$('#gfb');fb.className='gfb '+(ok?'ok':'bad');
   fb.innerHTML=`<div class="vline">${ok?`✓ ${WD[ans]} · +${pts}`:`✗ It ${isPast(x)?'was':'will be'} a ${WD[ans]}`}<small>${sec(ms)}</small></div>
+    ${ok?'':shortcutTab(x)}
     ${factCard(x)}
     <button class="btn next" data-act="g-next">${G.i>=NQ-1?'See results':'Next date'} →</button>`;
   G.reveal=true;
@@ -1371,7 +1398,7 @@ function vDaily(){
   <div class="gh">Today’s dates</div>${g.list.map((x,i)=>{const s=solve(x.Y,x.m,x.d),r=g.res[i];
     return `<section class="card rcard"><div class="rtop"><span class="mini"><i class="${tileOf(r)}"></i></span><b>${dstr(x)}</b> · ${WD[s.wd]}
       <span class="pts">${r.v<0?'skipped':`${sec(r.ms)} · +${r.pts}`}</span></div>${factCard(x)}
-      <details class="rev"><summary>${r.ok?'How to work it out':r.v<0?'Not answered — how to work it out':`You said ${WD[r.v]} — how to work it out`}</summary><div class="why">${whyFull(s)}</div></details></section>`;}).join('')}
+      <details class="rev"><summary>${r.ok?'How to work it out':r.v<0?'Not answered — how to work it out':`You said ${WD[r.v]} — how to work it out`}</summary>${shortcutRows(s)}<div class="why">${whyFull(s)}</div></details></section>`;}).join('')}
   <div class="cd">Next Daily Three in<b id="cd">${countdown()}</b></div>
   <p class="foot">Want more? Train → Practice solves or Full date.</p>`;
 }
@@ -1410,9 +1437,17 @@ async function gShare(){
   const others=(LB.rows||[]).filter(r=>r.client_id!==S.cid).map(r=>r.score);
   const top=others.length?topPct(g.score,others):null;
   const em={G:'🟩',Y:'🟨',R:'🟥'};
-  const text=`Doomsday Daily Three #${g.p} — ${g.score}/1000\n${g.tiles.split('').map(t=>em[t]).join('')} ⏱ ${sec(g.ms)}\n${g.list.map(x=>(CATS[x.cat]||['✨'])[0]).join(' ')}${top?`\nTop ${top}% of today’s players`:''}\n${APP_URL}`;
+  const s1=ms=>(ms/1000).toFixed(1)+'s';
+  const rows=g.res.map((r,i)=>`${em[g.tiles[i]]||'⬜'} ${r.v<0?'skipped':`+${r.pts} · ${s1(r.ms)}`}`).join('\n');
+  const text=`Doomsday Daily #${g.p} · ${g.score}/1000\n\n${rows}\n\n⏱ ${s1(g.ms)}${top?` · Top ${top}% today`:''}\ndoomsdaydaily.quest`;
+  if(await copyText(text)){toast('Copied results to clipboard');return;}
   try{if(navigator.share){await navigator.share({text});return;}}catch(e){if(e&&e.name==='AbortError')return;}
-  try{await navigator.clipboard.writeText(text);toast('Result copied — paste it to your friends');}catch(e){toast('Couldn’t copy');}
+  toast('Couldn’t copy — try again');
+}
+async function copyText(text){
+  try{await navigator.clipboard.writeText(text);return true;}catch(e){}
+  try{const t=document.createElement('textarea');t.value=text;t.setAttribute('readonly','');t.style.cssText='position:fixed;top:0;left:0;opacity:0';
+    document.body.appendChild(t);t.select();t.setSelectionRange(0,text.length);const ok=document.execCommand('copy');t.remove();return ok;}catch(e){return false;}
 }
 function toast(m){const d=document.createElement('div');d.className='toast';d.textContent=m;document.body.appendChild(d);setTimeout(()=>d.remove(),2200);}
 
